@@ -30,11 +30,9 @@ func main() {
 	}
 
 	router := mux.NewRouter()
-	router.HandleFunc("/people", handler.GetPeople).Methods("GET")
-	router.HandleFunc("/person", handler.GetPerson).Methods("GET")
-	router.HandleFunc("/person", handler.CreatePerson).Methods("POST")
-	router.HandleFunc("/people/{id}", handler.DeletePerson).Methods("DELET")
-	router.HandleFunc("/person/{id}", handler.UpdatePerson).Methods("PUT")
+	router.HandleFunc("/api/ping", handler.Ping).Methods("GET")
+	router.HandleFunc("/api/users", handler.GetAllUsers).Methods("GET")
+	router.HandleFunc("/api/users", handler.CreateUser).Methods("POST")
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))
 
 	log.Printf("Starting server on http://localhost:%s ...", port)
