@@ -4,21 +4,27 @@ import (
 	"database/sql"
 	"log"
 
+	// sqlite driver
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
 )
 
 var db *sql.DB
 
+// InitDB initialize connection & creating database
 func InitDB() {
 	var err error
-	db, err = sql.Open("sqlite3", "./golang-rest.db")
+	db, err = sql.Open("sqlite3", "./inventory.db")
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
 
-	statement, err := db.Prepare("CREATE TABLE IF NOT EXISTS person (id INTEGER PRIMARY KEY, firstname TEXT, lastname TEXT)")
+	statement, err := db.Prepare(`
+		CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT);
+		CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek INTEGER, caraPerolehan TEXT, harga REAL);
+		CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, idBarang INTEGER, jumlah INTEGER, tglKeluar NUMERIC);
+	`)
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -28,33 +34,43 @@ func InitDB() {
 	log.Println("connect to db")
 }
 
-func GetAllPeople() []models.Person {
-	var people []models.Person
-	q := "SELECT id, firstname, lastname FROM person"
-	if db == nil {
-		log.Fatal("db nil")
+// CreateUser insert new user to db
+func CreateUser(user *models.User) error {
+	stm, err := db.Prepare("INSERT INTO users (firstname, lastname, password) VALUES (?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+		return err
 	}
+
+	res, err := stm.Exec(user.FirstName, user.LastName, user.Password)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	id, err := res.LastInsertId()
+	user.ID = int(id)
+	return nil
+}
+
+// GetAllUser query all users
+func GetAllUser() ([]models.User, error) {
+	var users []models.User
+	q := "SELECT id, firstname, lastname FROM users"
 	rows, err := db.Query(q)
 	if err != nil {
 		log.Fatal(err)
-		return people
+		return users, err
 	}
 
-	var p models.Person
+	var u models.User
 	for rows.Next() {
-		rows.Scan(&p.ID, &p.Firstname, &p.Lastname)
-		people = append(people, p)
+		if err := rows.Scan(&u.ID, &u.FirstName, &u.LastName); err != nil {
+			log.Fatal(err)
+			return users, err
+		}
+		users = append(users, u)
 	}
 
-	return people
-}
-
-func Insert(person models.Person) {
-	stm, err := db.Prepare("INSERT INTO person (firstname, lastname) VALUES (?, ?)")
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
-	stm.Exec(person.Firstname, person.Lastname)
+	return users, nil
 }
