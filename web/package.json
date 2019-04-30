@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^3.16.6",
+    "axios": "^0.18.0",
     "babel-plugin-import": "^1.11.0",
     "customize-cra": "^0.2.12",
     "react": "^16.8.6",
@@ -27,5 +28,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "proxy": "http://localhost:8080"
 }

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Input, Select, Button } from 'antd';
+import axios from 'axios';
+import { Input, Select, Button, notification } from 'antd';
 import styled from 'styled-components';
 
 const { Option } = Select;
@@ -21,6 +22,21 @@ const SidedCard = styled.div`
 export class BarangMasuk extends React.Component {
   _isMounted = false
   tipe = ['Polisi', 'Mesin']
+  initNewBarang = {
+    kode: '', 
+    nama: '', 
+    reg: '',
+    merk: '',
+    ukuran: '',
+    bahan: '',
+    tglMasuk: null,
+    tipeSpek: this.tipe[0],
+    nomorSpek: '',
+    caraPerolehan: '',
+    jml: null,
+    harga: null,
+    ket: '',
+  }
   state = {
     barangs: [],
     newBarang: {
@@ -30,12 +46,12 @@ export class BarangMasuk extends React.Component {
       merk: '',
       ukuran: '',
       bahan: '',
-      tglMasuk: 0,
+      tglMasuk: null,
       tipeSpek: this.tipe[0],
       nomorSpek: '',
       caraPerolehan: '',
-      jml: 0,
-      harga: 0,
+      jml: null,
+      harga: null,
       ket: '',
     }
   }
@@ -43,6 +59,13 @@ export class BarangMasuk extends React.Component {
   componentDidMount() {
     this._isMounted = true
   }
+
+  openNotificationWithIcon = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+    });
+  };
 
   handleSelectSpek = (value) => {
     if (!this._isMounted) return;
@@ -52,6 +75,11 @@ export class BarangMasuk extends React.Component {
         tipeSpek: value,
       }
     });
+  }
+
+  asyncWrapper = (fn) => {
+    fn()
+      .catch(e => this.openNotificationWithIcon('error', e.message))
   }
 
   handleBarangInput = (event) => {
@@ -68,6 +96,31 @@ export class BarangMasuk extends React.Component {
     });
     console.log(value);
   }
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const { newBarang } = this.state;
+
+    // const keys = Object.keys(newBarang);
+    // if (!keys.every(k => newBarang[k])) {
+    //   this.openNotificationWithIcon('error', 'Field cannot be empty or 0');
+    //   return;
+    // }
+
+    try {
+      const { data } = await axios('/api/barang', {
+        method: 'POST',
+        data: {
+          ...newBarang,
+          tglMasuk: (new Date(newBarang.tglMasuk)).getTime(),
+        }
+      });
+      this.setState({ newBarang: this.initNewBarang })
+      console.log(data);
+    } catch (e) {
+      this.openNotificationWithIcon('error', 'Field cannot be empty');
+    }
+  };
 
   render() {
     const { newBarang } = this.state;
@@ -108,7 +161,7 @@ export class BarangMasuk extends React.Component {
         <SidedCard>
           <Card>
             <label>Perolehan</label>
-            <Input value={newBarang.tglMasuk} name='tglMasuk' onChange={this.handleBarangInput}/>
+            <Input type='date' value={newBarang.tglMasuk} name='tglMasuk' onChange={this.handleBarangInput}/>
           </Card>
           <Card>
             <label>Nomor</label>
@@ -132,16 +185,26 @@ export class BarangMasuk extends React.Component {
           </Card>
           <Card>
             <label>Harga</label>
-            <Input value={newBarang.harga} name='harga' onChange={this.handleBarangInput}/>
+            <Input placeholder='0' value={newBarang.harga} name='harga' onChange={this.handleBarangInput}/>
           </Card>
         </SidedCard>
         <SidedCard>
+          <Card>
+            <label>Jumlah</label>
+            <Input placeholder='0' type='number' value={newBarang.jml} name='jml' onChange={this.handleBarangInput}/>
+          </Card>
           <Card>
             <label>Keterangan</label>
             <Input value={newBarang.ket} name='ket' onChange={this.handleBarangInput}/>
           </Card>
         </SidedCard>
-        <Button style={{ margin: '8px', width: '100%' }} htmlType='submit' type='primary'>Tambah</Button>
+
+        <Button
+          onClick={this.handleSubmit}
+          style={{ margin: '8px', width: '100%' }} 
+          htmlType='submit' type='primary'>
+          Tambah
+        </Button>
       </form>
     </Container>;
   }
