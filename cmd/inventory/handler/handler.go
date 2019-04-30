@@ -73,7 +73,7 @@ func GetBarang(w http.ResponseWriter, r *http.Request) {
 	var brg models.Barang
 	err = repo.GetBarang(id, &brg)
 	if err != nil {
-		log.Fatal(err)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 
@@ -95,5 +95,11 @@ func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 
 // GetJurnal get jurnal
 func GetJurnal(w http.ResponseWriter, r *http.Request) {
+	brgs, err := repo.GetAllBarang()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
 
+	json.NewEncoder(w).Encode(brgs)
 }

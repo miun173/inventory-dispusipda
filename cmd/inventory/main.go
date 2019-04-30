@@ -39,8 +39,8 @@ func main() {
 	router.HandleFunc("/api/users", handler.CreateUser).Methods("POST")
 
 	// barang
-	router.HandleFunc("/api/barang", handler.CreateBarang).Methods("POST")
 	router.HandleFunc("/api/barang/{id}", handler.GetBarang).Methods("GET")
+	router.HandleFunc("/api/barang", handler.CreateBarang).Methods("POST")
 	router.HandleFunc("/api/barang/keluar", handler.CreateBarangKeluar).Methods("POST")
 
 	// jurnal

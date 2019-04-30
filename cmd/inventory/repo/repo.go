@@ -142,3 +142,28 @@ func GetBarang(id int, brg *models.Barang) error {
 
 	return nil
 }
+
+// GetAllBarang get all branangs in db
+func GetAllBarang() ([]models.Barang, error) {
+	q := `SELECT 
+		id, kode, nama, reg, merk, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga
+		FROM barang`
+
+	rows, err := db.Query(q)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	var brgs []models.Barang
+	var brg models.Barang
+	for rows.Next() {
+		if err := rows.Scan(&brg.ID, &brg.Kode, &brg.Nama, &brg.Reg, &brg.Merk, &brg.Ukuran, &brg.Bahan, &brg.TglMasuk, &brg.TipeSpek, &brg.NomorSpek, &brg.CaraPerolehan, &brg.Harga); err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+
+		brgs = append(brgs, brg)
+	}
+
+	return brgs, nil
+}
