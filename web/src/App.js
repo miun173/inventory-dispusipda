@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Icon } from 'antd';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
@@ -21,15 +22,25 @@ const LeftNav = styled.div`
 
 const LeftMenu = styled.div`
   margin-left: 16px;
+  a {
+    color: #fff;
+  }
 `
 
 const Title = styled.div`
   height: 100px;
   width: 100%;
-  background: blue;
+  background: #1890FF;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  a {
+    h3 {
+      color: #fff;
+      font-weight: bold;
+    }
+  }
 `
 
 class App extends Component {
@@ -39,11 +50,19 @@ class App extends Component {
       <Container>
         <LeftNav>
           <Title>
-            <Link to='/'>Inventory Barang</Link>
+            <Link to='/'>
+              <h3>Inventory Barang</h3>
+            </Link>
           </Title>
           <br />
           <LeftMenu>
+            <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
             <Link to='/barang'>Barang Masuk</Link>
+          </LeftMenu>
+          <br />
+          <LeftMenu>
+            <Icon type='import' style={{ color: '#fff', marginRight: '8px' }} />
+            <Link to='/barang-keluar'>Barang Keluar</Link>
           </LeftMenu>
         </LeftNav>
           <Route path='/barang' component={BarangMasuk} />
