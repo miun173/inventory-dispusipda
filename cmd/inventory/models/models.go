@@ -29,7 +29,7 @@ type Barang struct {
 	NomorSpek     string  `json:"nomorSpek,omitempty"`
 	CaraPerolehan string  `json:"caraPerolehan,omitempty"`
 	TglMasuk      int     `json:"tglMasuk,omitempty"`
-	Harga         float32 `json:"harga,omitempty"`
+	Harga         float64 `json:"harga,omitempty"`
 }
 
 // BarangKeluar model
