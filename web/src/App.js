@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import {
   BarangMasuk,
+  Jurnal,
 } from './containers'
 
 const Container = styled.div`
@@ -56,6 +57,11 @@ class App extends Component {
           </Title>
           <br />
           <LeftMenu>
+            <Icon type='book' style={{ color: '#fff', marginRight: '8px' }} />
+            <Link to='/jurnal'>Jurnal</Link>
+          </LeftMenu>
+          <br />
+          <LeftMenu>
             <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
             <Link to='/barang'>Barang Masuk</Link>
           </LeftMenu>
@@ -66,6 +72,7 @@ class App extends Component {
           </LeftMenu>
         </LeftNav>
           <Route path='/barang' component={BarangMasuk} />
+          <Route path='/jurnal' component={Jurnal} />
       </Container>
       </Router>
     );
