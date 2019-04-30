@@ -40,7 +40,11 @@ func main() {
 
 	// barang
 	router.HandleFunc("/api/barang", handler.CreateBarang).Methods("POST")
-	router.HandleFunc("/api/barang/keluar", handler.BarangKeluar).Methods("POST")
+	router.HandleFunc("/api/barang/{id}", handler.GetBarang).Methods("GET")
+	router.HandleFunc("/api/barang/keluar", handler.CreateBarangKeluar).Methods("POST")
+
+	// jurnal
+	router.HandleFunc("/api/jurnal", handler.GetJurnal).Methods("GET")
 
 	// frontend
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))

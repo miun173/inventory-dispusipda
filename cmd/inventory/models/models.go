@@ -39,3 +39,12 @@ type BarangKeluar struct {
 	Jml       int `json:"jml,omitempty"`
 	TglKeluar int `json:"tglKeluar,omitempty"`
 }
+
+// Jurnal model
+type Jurnal struct {
+	Barang
+	NilaiSisa    int     `json:"nilaiSisa,omitempty"`
+	UmurEkonomis float64 `json:"umurEkonomis,omitempty"`
+	Penyusutan   float64 `json:"penyusutan,omitempty"`
+	NilaiBuku    float64 `json:"nilaiBuku,omitempty"`
+}

@@ -2,10 +2,12 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/repo"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // var people []models.Person
@@ -59,8 +61,27 @@ func CreateBarang(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(brg)
 }
 
-// BarangKeluar handle barang keluar
-func BarangKeluar(w http.ResponseWriter, r *http.Request) {
+// GetBarang handle get all barang
+func GetBarang(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	var brg models.Barang
+	err = repo.GetBarang(id, &brg)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	json.NewEncoder(w).Encode(brg)
+}
+
+// CreateBarangKeluar handle barang keluar
+func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	var brg models.BarangKeluar
 	_ = json.NewDecoder(r.Body).Decode(&brg)
 	err := repo.CreateBarangKeluar(&brg)
@@ -70,4 +91,9 @@ func BarangKeluar(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(brg)
+}
+
+// GetJurnal get jurnal
+func GetJurnal(w http.ResponseWriter, r *http.Request) {
+
 }

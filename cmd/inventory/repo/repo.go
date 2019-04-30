@@ -120,3 +120,25 @@ func CreateBarangKeluar(brg *models.BarangKeluar) error {
 
 	return nil
 }
+
+// GetBarang get barang by its ID
+func GetBarang(id int, brg *models.Barang) error {
+	q := `SELECT 
+		id, kode, nama, reg, merk, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga
+		FROM barang
+		WHERE id = ?`
+	rows, err := db.Query(q, id)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&brg.ID, &brg.Kode, &brg.Nama, &brg.Reg, &brg.Merk, &brg.Ukuran, &brg.Bahan, &brg.TglMasuk, &brg.TipeSpek, &brg.NomorSpek, &brg.CaraPerolehan, &brg.Harga); err != nil {
+			log.Fatal(err)
+			return err
+		}
+	}
+
+	return nil
+}
