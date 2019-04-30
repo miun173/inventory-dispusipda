@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	// "strconv"
@@ -24,7 +23,6 @@ func Ping(w http.ResponseWriter, r *http.Request) {
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	_ = json.NewDecoder(r.Body).Decode(&user)
-	fmt.Printf("firstname %s", user.FirstName)
 	err := repo.CreateUser(&user)
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
@@ -45,8 +43,22 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
+// Login handle user login
 func Login(w http.ResponseWriter, r *http.Request) {
 
+}
+
+// CreateBarang handle create barang
+func CreateBarang(w http.ResponseWriter, r *http.Request) {
+	var brg models.Barang
+	_ = json.NewDecoder(r.Body).Decode(&brg)
+	err := repo.CreateBarang(&brg)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+
+	json.NewEncoder(w).Encode(brg)
 }
 
 // func UpdatePerson(w http.ResponseWriter, r *http.Request) {

@@ -31,8 +31,15 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/api/ping", handler.Ping).Methods("GET")
+
+	// users
 	router.HandleFunc("/api/users", handler.GetAllUsers).Methods("GET")
 	router.HandleFunc("/api/users", handler.CreateUser).Methods("POST")
+
+	// barang
+	router.HandleFunc("/api/barang", handler.CreateBarang).Methods("POST")
+
+	// frontend
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))
 
 	log.Printf("Starting server on http://localhost:%s ...", port)

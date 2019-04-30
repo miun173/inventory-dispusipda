@@ -15,3 +15,19 @@ type User struct {
 	LastName  string `json:"lastName,omitempty"`
 	Password  string `json:"password,omitempty"`
 }
+
+// Barang model
+type Barang struct {
+	ID            int     `json:"id,omitempty"`
+	Kode          string  `json:"kode,omitempty"`
+	Nama          string  `json:"nama,omitempty"`
+	Reg           string  `json:"reg,omitempty"`
+	Merk          string  `json:"merk,omitempty"`
+	Ukuran        string  `json:"ukuran,omitempty"`
+	Bahan         string  `json:"bahan,omitempty"`
+	TipeSpek      string  `json:"tipeSpek,omitempty"`
+	NomorSpek     string  `json:"nomorSpek,omitempty"`
+	CaraPerolehan string  `json:"caraPerolehan,omitempty"`
+	TglMasuk      int     `json:"tglMasuk,omitempty"`
+	Harga         float32 `json:"harga,omitempty"`
+}

@@ -20,16 +20,20 @@ func InitDB() {
 		return
 	}
 
-	statement, err := db.Prepare(`
-		CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT);
-		CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek INTEGER, caraPerolehan TEXT, harga REAL);
-		CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, idBarang INTEGER, jumlah INTEGER, tglKeluar NUMERIC);
-	`)
-	if err != nil {
-		log.Fatal(err)
-		return
+	stmts := []string{
+		"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT, role TEXT);",
+		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, harga REAL);",
+		"CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, idBarang INTEGER, jumlah INTEGER, tglKeluar NUMERIC);",
 	}
-	statement.Exec()
+
+	for _, s := range stmts {
+		statement, err := db.Prepare(s)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		statement.Exec()
+	}
 
 	log.Println("connect to db")
 }
@@ -73,4 +77,25 @@ func GetAllUser() ([]models.User, error) {
 	}
 
 	return users, nil
+}
+
+// CreateBarang insert new barang into db
+func CreateBarang(brg *models.Barang) error {
+	stm, err := db.Prepare(`INSERT INTO barang (kode, nama, reg, merk, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	res, err := stm.Exec(brg.Kode, brg.Nama, brg.Reg, brg.Merk, brg.Ukuran, brg.Bahan, brg.TglMasuk, brg.TipeSpek, brg.NomorSpek, brg.CaraPerolehan, brg.Harga)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	id, err := res.LastInsertId()
+	brg.ID = int(id)
+
+	return nil
 }
