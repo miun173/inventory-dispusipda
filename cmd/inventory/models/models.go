@@ -31,3 +31,11 @@ type Barang struct {
 	TglMasuk      int     `json:"tglMasuk,omitempty"`
 	Harga         float32 `json:"harga,omitempty"`
 }
+
+// BarangKeluar model
+type BarangKeluar struct {
+	ID        int `json:"id,omitempty"`
+	BarangID  int `json:"barangID,omitempty"`
+	Jml       int `json:"jml,omitempty"`
+	TglKeluar int `json:"tglKeluar,omitempty"`
+}

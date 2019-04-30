@@ -22,8 +22,8 @@ func InitDB() {
 
 	stmts := []string{
 		"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT, role TEXT);",
-		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, harga REAL);",
-		"CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, idBarang INTEGER, jumlah INTEGER, tglKeluar NUMERIC);",
+		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, jml INTEGER, harga REAL);",
+		"CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, barangID INTEGER, jml INTEGER, tglKeluar NUMERIC);",
 	}
 
 	for _, s := range stmts {
@@ -89,6 +89,27 @@ func CreateBarang(brg *models.Barang) error {
 	}
 
 	res, err := stm.Exec(brg.Kode, brg.Nama, brg.Reg, brg.Merk, brg.Ukuran, brg.Bahan, brg.TglMasuk, brg.TipeSpek, brg.NomorSpek, brg.CaraPerolehan, brg.Harga)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	id, err := res.LastInsertId()
+	brg.ID = int(id)
+
+	return nil
+}
+
+// CreateBarangKeluar insert new barang keluar to DB
+func CreateBarangKeluar(brg *models.BarangKeluar) error {
+	stm, err := db.Prepare(`INSERT INTO barangKeluar (barangID, jml, tglKeluar) 
+		VALUES (?, ?, ?)`)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	res, err := stm.Exec(brg.BarangID, brg.Jml, brg.TglKeluar)
 	if err != nil {
 		log.Fatal(err)
 		return err

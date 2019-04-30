@@ -30,6 +30,8 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	router.Use(commonMiddleware)
+
 	router.HandleFunc("/api/ping", handler.Ping).Methods("GET")
 
 	// users
@@ -38,10 +40,18 @@ func main() {
 
 	// barang
 	router.HandleFunc("/api/barang", handler.CreateBarang).Methods("POST")
+	router.HandleFunc("/api/barang/keluar", handler.BarangKeluar).Methods("POST")
 
 	// frontend
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))
 
 	log.Printf("Starting server on http://localhost:%s ...", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))
+}
+
+func commonMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
 }
