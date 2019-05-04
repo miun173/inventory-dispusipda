@@ -23,6 +23,7 @@ type Barang struct {
 	Nama            string  `json:"nama,omitempty"`
 	Reg             string  `json:"reg,omitempty"`
 	Merk            string  `json:"merk,omitempty"`
+	Jml             int     `json:"jml,omitempty"`
 	Ukuran          string  `json:"ukuran,omitempty"`
 	Bahan           string  `json:"bahan,omitempty"`
 	TipeSpek        string  `json:"tipeSpek,omitempty"`
@@ -35,6 +36,7 @@ type Barang struct {
 	UmurPenggunaan  int     `json:"umurPenggunaan,omitempty"`
 	NilaiBuku       float64 `json:"nilaiBuku,omitempty"`
 	BebanPenyusutan float64 `json:"bebanPenyusutan,omitempty"`
+	Ket             string  `json:"ket,omitempty"`
 }
 
 // BarangKeluar model
