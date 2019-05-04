@@ -18,18 +18,23 @@ type User struct {
 
 // Barang model
 type Barang struct {
-	ID            int     `json:"id,omitempty"`
-	Kode          string  `json:"kode,omitempty"`
-	Nama          string  `json:"nama,omitempty"`
-	Reg           string  `json:"reg,omitempty"`
-	Merk          string  `json:"merk,omitempty"`
-	Ukuran        string  `json:"ukuran,omitempty"`
-	Bahan         string  `json:"bahan,omitempty"`
-	TipeSpek      string  `json:"tipeSpek,omitempty"`
-	NomorSpek     string  `json:"nomorSpek,omitempty"`
-	CaraPerolehan string  `json:"caraPerolehan,omitempty"`
-	TglMasuk      int     `json:"tglMasuk,omitempty"`
-	Harga         float64 `json:"harga,omitempty"`
+	ID              int     `json:"id,omitempty"`
+	Kode            string  `json:"kode,omitempty"`
+	Nama            string  `json:"nama,omitempty"`
+	Reg             string  `json:"reg,omitempty"`
+	Merk            string  `json:"merk,omitempty"`
+	Ukuran          string  `json:"ukuran,omitempty"`
+	Bahan           string  `json:"bahan,omitempty"`
+	TipeSpek        string  `json:"tipeSpek,omitempty"`
+	NomorSpek       string  `json:"nomorSpek,omitempty"`
+	CaraPerolehan   string  `json:"caraPerolehan,omitempty"`
+	TglMasuk        int     `json:"tglMasuk,omitempty"`
+	Harga           float64 `json:"harga,omitempty"`
+	NilaiSisa       float64 `json:"nilaiSisa,omitempty"`
+	UmurEkonomis    int     `json:"umurEkonomis,omitempty"`
+	UmurPenggunaan  int     `json:"umurPenggunaan,omitempty"`
+	NilaiBuku       float64 `json:"nilaiBuku,omitempty"`
+	BebanPenyusutan float64 `json:"bebanPenyusutan,omitempty"`
 }
 
 // BarangKeluar model
@@ -43,8 +48,5 @@ type BarangKeluar struct {
 // Jurnal model
 type Jurnal struct {
 	Barang
-	NilaiSisa    int     `json:"nilaiSisa,omitempty"`
-	UmurEkonomis float64 `json:"umurEkonomis,omitempty"`
-	Penyusutan   float64 `json:"penyusutan,omitempty"`
-	NilaiBuku    float64 `json:"nilaiBuku,omitempty"`
+	Penyusutan float64 `json:"penyusutan,omitempty"`
 }
