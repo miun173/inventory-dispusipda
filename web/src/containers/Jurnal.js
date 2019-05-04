@@ -92,9 +92,14 @@ export class Jurnal extends React.Component {
       title: 'Beban Penyusutan',
       dataIndex: 'bebanPenyusutan',
       key: 'bebanPenyusutan',
-    }, ]
+    }, {
+      title: 'Penyusutan',
+      dataIndex: 'penyusutan',
+      key: 'penyusutan',
+      render: (data) => data ? data.toLocaleString('id-ID') : 0
+    },]
 
-    return <div style={{ maxWidth: '1100px', padding: '16px' }}>
+    return <div style={{ maxWidth: '1100px', width: '100%', padding: '16px' }}>
       <h2>Jurnal</h2>
       <Table style={{ width: '100%' }} scroll={{ x: 1100 }} columns={cols} dataSource={jurnal} />
     </div>
