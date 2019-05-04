@@ -30,7 +30,6 @@ func main() {
 	}
 
 	router := mux.NewRouter()
-	router.Use(commonMiddleware)
 
 	router.HandleFunc("/api/ping", handler.Ping).Methods("GET")
 
@@ -51,11 +50,4 @@ func main() {
 
 	log.Printf("Starting server on http://localhost:%s ...", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))
-}
-
-func commonMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		next.ServeHTTP(w, r)
-	})
 }
