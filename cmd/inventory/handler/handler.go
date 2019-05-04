@@ -2,12 +2,13 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/repo"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
+	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
+	"github.com/miun173/inventory-dispusibda/cmd/inventory/repo"
 )
 
 // var people []models.Person
@@ -93,13 +94,33 @@ func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(brg)
 }
 
-// GetJurnal get jurnal
+// GetJurnal list all available jurnal
 func GetJurnal(w http.ResponseWriter, r *http.Request) {
+	var jurnals []models.Jurnal
 	brgs, err := repo.GetAllBarang()
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 
-	json.NewEncoder(w).Encode(brgs)
+	for _, b := range brgs {
+		penyusutan := (b.Harga - b.NilaiSisa) / float64(b.UmurEkonomis)
+		j := models.Jurnal{
+			Barang:     b,
+			Penyusutan: penyusutan,
+		}
+		jurnals = append(jurnals, j)
+	}
+
+	jData, err := json.Marshal(jurnals)
+	if err != nil {
+		log.Printf("error: %s", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jData)
 }
