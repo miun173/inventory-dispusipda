@@ -41,6 +41,10 @@ export class Jurnal extends React.Component {
       dataIndex: 'merk',
       key: 'merk',
     }, {
+      title: 'Jml',
+      dataIndex: 'jml',
+      key: 'jml',
+    }, {
       title: 'Ukuran',
       dataIndex: 'ukuran',
       key: 'ukuran',
@@ -63,11 +67,36 @@ export class Jurnal extends React.Component {
       title: 'Nomor',
       dataIndex: 'nomorSpek',
       key: 'nomorSpek',
-    }]
+    }, {
+      title: 'Keterangan',
+      dataIndex: 'ket',
+      key: 'ket',
+    }, {
+      title: 'Nilai Sisa',
+      dataIndex: 'nilaiSisa',
+      key: 'nilaiSisa',
+      render: (data) => <span>{data ? data : 0}</span>
+    }, {
+      title: 'Umur Ekonomis',
+      dataIndex: 'umurEkonomis',
+      key: 'umurEkonomis',
+    }, {
+      title: 'Umur Penggunaan',
+      dataIndex: 'umurPenggunaan',
+      key: 'umurPenggunaan',
+    }, {
+      title: 'Nilai Buku',
+      dataIndex: 'nilaiBuku',
+      key: 'nilaiBuku',
+    }, {
+      title: 'Beban Penyusutan',
+      dataIndex: 'bebanPenyusutan',
+      key: 'bebanPenyusutan',
+    }, ]
 
-    return <div style={{ width: '100%', padding: '16px' }}>
+    return <div style={{ maxWidth: '1100px', padding: '16px' }}>
       <h2>Jurnal</h2>
-      <Table style={{ width: '100%' }} columns={cols} dataSource={jurnal} />
+      <Table style={{ width: '100%' }} scroll={{ x: 1100 }} columns={cols} dataSource={jurnal} />
     </div>
   }
 }

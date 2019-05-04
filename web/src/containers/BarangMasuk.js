@@ -19,41 +19,34 @@ const SidedCard = styled.div`
   display: flex;
 `
 
+const tipe = ['Polisi', 'Mesin']
+const initNewBarang = {
+  kode: '', 
+  nama: '', 
+  reg: '',
+  merk: '',
+  ukuran: '',
+  bahan: '',
+  tglMasuk: null,
+  tipeSpek: tipe[0],
+  nomorSpek: '',
+  caraPerolehan: '',
+  jml: 0,
+  harga: 0.0,
+  ket: '',
+  nilaiSisa: 0,
+  umurEkonomis: 0,
+  umurPenggunaan: 0,
+  nilaiBuku: 0,
+  bebanPenyusutan: 0.0
+}
+
 export class BarangMasuk extends React.Component {
   _isMounted = false
   tipe = ['Polisi', 'Mesin']
-  initNewBarang = {
-    kode: '', 
-    nama: '', 
-    reg: '',
-    merk: '',
-    ukuran: '',
-    bahan: '',
-    tglMasuk: null,
-    tipeSpek: this.tipe[0],
-    nomorSpek: '',
-    caraPerolehan: '',
-    jml: null,
-    harga: null,
-    ket: '',
-  }
   state = {
     barangs: [],
-    newBarang: {
-      kode: '', 
-      nama: '', 
-      reg: '',
-      merk: '',
-      ukuran: '',
-      bahan: '',
-      tglMasuk: null,
-      tipeSpek: this.tipe[0],
-      nomorSpek: '',
-      caraPerolehan: '',
-      jml: null,
-      harga: null,
-      ket: '',
-    }
+    newBarang: { ...initNewBarang },
   }
 
   componentDidMount() {
@@ -84,7 +77,7 @@ export class BarangMasuk extends React.Component {
 
   handleBarangInput = (event) => {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === 'number' ? parseFloat(target.value) : target.value;
     const name = target.name;
 
     if (!this._isMounted) return;
@@ -94,7 +87,6 @@ export class BarangMasuk extends React.Component {
         [name]: value,
       }
     });
-    console.log(value);
   }
 
   handleSubmit = async (e) => {
@@ -115,7 +107,7 @@ export class BarangMasuk extends React.Component {
           tglMasuk: (new Date(newBarang.tglMasuk)).getTime(),
         }
       });
-      this.setState({ newBarang: this.initNewBarang })
+      this.setState({ newBarang: initNewBarang })
       console.log(data);
     } catch (e) {
       this.openNotificationWithIcon('error', 'Field cannot be empty');
@@ -185,20 +177,45 @@ export class BarangMasuk extends React.Component {
           </Card>
           <Card>
             <label>Harga</label>
-            <Input placeholder='0' value={newBarang.harga} name='harga' onChange={this.handleBarangInput}/>
+            <Input type='number' value={newBarang.harga} name='harga' onChange={this.handleBarangInput}/>
           </Card>
         </SidedCard>
         <SidedCard>
           <Card>
             <label>Jumlah</label>
-            <Input placeholder='0' type='number' value={newBarang.jml} name='jml' onChange={this.handleBarangInput}/>
+            <Input type='number' value={newBarang.jml} name='jml' onChange={this.handleBarangInput}/>
           </Card>
           <Card>
             <label>Keterangan</label>
             <Input value={newBarang.ket} name='ket' onChange={this.handleBarangInput}/>
           </Card>
         </SidedCard>
-
+        <SidedCard>
+          <Card>
+            <label>Nilai Sisa</label>
+            <Input type='number' value={newBarang.nilaiSisa} name='nilaiSisa' onChange={this.handleBarangInput}/>
+          </Card>
+          <Card>
+            <label>Umur Ekonomis</label>
+            <Input type='number' value={newBarang.umurEkonomis} name='umurEkonomis' onChange={this.handleBarangInput}/>
+          </Card>
+        </SidedCard>
+        <SidedCard>
+          <Card>
+            <label>Umur Penggunaan</label>
+            <Input type='number' value={newBarang.umurPenggunaan} name='umurPenggunaan' onChange={this.handleBarangInput}/>
+          </Card>
+          <Card>
+            <label>Nilai Buku</label>
+            <Input type='number' value={newBarang.nilaiBuku} name='nilaiBuku' onChange={this.handleBarangInput}/>
+          </Card>
+        </SidedCard>
+        <SidedCard>
+          <Card>
+            <label>Beban Penyusutan</label>
+            <Input type='number' value={newBarang.bebanPenyusutan} name='bebanPenyusutan' onChange={this.handleBarangInput}/>
+          </Card>
+        </SidedCard>
         <Button
           onClick={this.handleSubmit}
           style={{ margin: '8px', width: '100%' }} 
