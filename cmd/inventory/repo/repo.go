@@ -189,8 +189,6 @@ func GetAllBarangKeluar() ([]models.BarangKeluar, error) {
 			return nil, err
 		}
 
-		log.Println(b)
-
 		brgs = append(brgs, b)
 	}
 
