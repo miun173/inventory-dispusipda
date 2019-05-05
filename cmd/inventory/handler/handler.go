@@ -94,6 +94,16 @@ func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(brg)
 }
 
+func GetAllBarangKeluar(w http.ResponseWriter, r *http.Request) {
+	brgs, err := repo.GetAllBarangKeluar()
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+
+	json.NewEncoder(w).Encode(brgs)
+}
+
 // GetJurnal list all available jurnal
 func GetJurnal(w http.ResponseWriter, r *http.Request) {
 	var jurnals []models.Jurnal

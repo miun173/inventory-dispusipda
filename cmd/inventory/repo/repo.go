@@ -105,6 +105,8 @@ func CreateBarangKeluar(brg *models.BarangKeluar) error {
 	stm, err := db.Prepare(`INSERT INTO barangKeluar (barangID, jml, tglKeluar) 
 		VALUES (?, ?, ?)`)
 	if err != nil {
+		log.Println("filed create barang")
+		log.Println(brg)
 		log.Fatal(err)
 		return err
 	}
@@ -143,7 +145,7 @@ func GetBarang(id int, brg *models.Barang) error {
 	return nil
 }
 
-// GetAllBarang get all branangs in db
+// GetAllBarang get all barangs in db
 func GetAllBarang() ([]models.Barang, error) {
 	q := `SELECT 
 		id, kode, nama, reg, merk, jml, ket, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga, nilaiSisa, umurEkonomis, umurPenggunaan, nilaiBuku, bebanPenyusutan
@@ -163,6 +165,33 @@ func GetAllBarang() ([]models.Barang, error) {
 		}
 
 		brgs = append(brgs, brg)
+	}
+
+	return brgs, nil
+}
+
+// GetAllBarangKeluar get all barnag keluar in db
+func GetAllBarangKeluar() ([]models.BarangKeluar, error) {
+	var brgs []models.BarangKeluar
+
+	q := `SELECT bk.id, bk.barangID, bk.jml, bk.tglKeluar, b.nama
+	FROM barangKeluar bk, barang b
+	WHERE bk.barangID=b.id`
+
+	rows, err := db.Query(q)
+	if err != nil {
+		return nil, err
+	}
+
+	var b models.BarangKeluar
+	for rows.Next() {
+		if err := rows.Scan(&b.ID, &b.BarangID, &b.Jml, &b.TglKeluar, &b.Nama); err != nil {
+			return nil, err
+		}
+
+		log.Println(b)
+
+		brgs = append(brgs, b)
 	}
 
 	return brgs, nil

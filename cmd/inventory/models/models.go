@@ -41,10 +41,11 @@ type Barang struct {
 
 // BarangKeluar model
 type BarangKeluar struct {
-	ID        int `json:"id,omitempty"`
-	BarangID  int `json:"barangID,omitempty"`
-	Jml       int `json:"jml,omitempty"`
-	TglKeluar int `json:"tglKeluar,omitempty"`
+	Nama      string `json:"nama,omitempty"`
+	ID        int    `json:"id,omitempty"`
+	BarangID  int    `json:"barangID,omitempty"`
+	Jml       int    `json:"jml,omitempty"`
+	TglKeluar int    `json:"tglKeluar,omitempty"`
 }
 
 // Jurnal model
