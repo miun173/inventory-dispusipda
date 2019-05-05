@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import {
   BarangMasuk,
+  BarangKeluar,
   Jurnal,
 } from './containers'
 
@@ -62,17 +63,18 @@ class App extends Component {
           </LeftMenu>
           <br />
           <LeftMenu>
-            <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
+            <Icon type='import' style={{ color: '#fff', marginRight: '8px' }} />
             <Link to='/barang'>Barang Masuk</Link>
           </LeftMenu>
           <br />
           <LeftMenu>
-            <Icon type='import' style={{ color: '#fff', marginRight: '8px' }} />
+            <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
             <Link to='/barang-keluar'>Barang Keluar</Link>
           </LeftMenu>
         </LeftNav>
           <Route path='/barang' component={BarangMasuk} />
           <Route path='/jurnal' component={Jurnal} />
+          <Route path='/barang-keluar' component={BarangKeluar} />
       </Container>
       </Router>
     );

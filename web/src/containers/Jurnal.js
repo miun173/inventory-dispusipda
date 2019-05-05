@@ -25,6 +25,10 @@ export class Jurnal extends React.Component {
     const { jurnal } = this.state;
 
     const cols = [{
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    }, {
       title: 'Kode',
       dataIndex: 'kode',
       key: 'kode',
