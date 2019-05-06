@@ -124,10 +124,26 @@ func GetAllBarangKeluar(w http.ResponseWriter, r *http.Request) {
 
 	brgs, err := repo.GetAllBarangKeluar()
 	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(brgs)
+}
+
+// GetAllBarang list all available barang keluar
+func GetAllBarang(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	brgs, err := repo.GetAllBarang()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(brgs)
 }
 

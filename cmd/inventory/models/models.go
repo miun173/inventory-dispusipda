@@ -42,7 +42,7 @@ type Barang struct {
 
 // BarangKeluar model
 type BarangKeluar struct {
-	Nama      string `json:"nama"`
+	Nama      string `json:"nama,omitempty"`
 	ID        int    `json:"id"`
 	BarangID  int    `json:"barangID"`
 	Jml       int    `json:"jml"`
