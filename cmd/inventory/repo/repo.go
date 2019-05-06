@@ -59,7 +59,7 @@ func CreateUser(user *models.User) error {
 
 // GetAllUser query all users
 func GetAllUser() ([]models.User, error) {
-	var users []models.User
+	users := make([]models.User, 0)
 	q := "SELECT id, firstname, lastname FROM users"
 	rows, err := db.Query(q)
 	if err != nil {
@@ -156,7 +156,7 @@ func GetAllBarang() ([]models.Barang, error) {
 		log.Fatal(err)
 		return nil, err
 	}
-	var brgs []models.Barang
+	brgs := make([]models.Barang, 0)
 	var brg models.Barang
 	for rows.Next() {
 		if err := rows.Scan(&brg.ID, &brg.Kode, &brg.Nama, &brg.Reg, &brg.Merk, &brg.Jml, &brg.Ket, &brg.Ukuran, &brg.Bahan, &brg.TglMasuk, &brg.TipeSpek, &brg.NomorSpek, &brg.CaraPerolehan, &brg.Harga, &brg.NilaiSisa, &brg.UmurEkonomis, &brg.UmurPenggunaan, &brg.NilaiBuku, &brg.BebanPenyusutan); err != nil {
@@ -172,7 +172,7 @@ func GetAllBarang() ([]models.Barang, error) {
 
 // GetAllBarangKeluar get all barnag keluar in db
 func GetAllBarangKeluar() ([]models.BarangKeluar, error) {
-	var brgs []models.BarangKeluar
+	brgs := make([]models.BarangKeluar, 0)
 
 	q := `SELECT bk.id, bk.barangID, bk.jml, bk.tglKeluar, b.nama
 	FROM barangKeluar bk, barang b
