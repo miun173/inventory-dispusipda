@@ -18,38 +18,39 @@ type User struct {
 
 // Barang model
 type Barang struct {
-	ID              int     `json:"id,omitempty"`
-	Kode            string  `json:"kode,omitempty"`
-	Nama            string  `json:"nama,omitempty"`
-	Reg             string  `json:"reg,omitempty"`
-	Merk            string  `json:"merk,omitempty"`
-	Jml             int     `json:"jml,omitempty"`
-	Ukuran          string  `json:"ukuran,omitempty"`
-	Bahan           string  `json:"bahan,omitempty"`
-	TipeSpek        string  `json:"tipeSpek,omitempty"`
-	NomorSpek       string  `json:"nomorSpek,omitempty"`
-	CaraPerolehan   string  `json:"caraPerolehan,omitempty"`
-	TglMasuk        int     `json:"tglMasuk,omitempty"`
-	Harga           float64 `json:"harga,omitempty"`
-	NilaiSisa       float64 `json:"nilaiSisa,omitempty"`
-	UmurEkonomis    int     `json:"umurEkonomis,omitempty"`
-	UmurPenggunaan  int     `json:"umurPenggunaan,omitempty"`
-	NilaiBuku       float64 `json:"nilaiBuku,omitempty"`
-	BebanPenyusutan float64 `json:"bebanPenyusutan,omitempty"`
-	Ket             string  `json:"ket,omitempty"`
+	ID              int     `json:"id"`
+	Kode            string  `json:"kode"`
+	Nama            string  `json:"nama"`
+	Reg             string  `json:"reg"`
+	Merk            string  `json:"merk"`
+	Jml             int     `json:"jml"`
+	Ukuran          string  `json:"ukuran"`
+	Bahan           string  `json:"bahan"`
+	TipeSpek        string  `json:"tipeSpek"`
+	NomorSpek       string  `json:"nomorSpek"`
+	CaraPerolehan   string  `json:"caraPerolehan"`
+	TglMasuk        int     `json:"tglMasuk"`
+	Harga           float64 `json:"harga"`
+	NilaiSisa       float64 `json:"nilaiSisa"`
+	UmurEkonomis    int     `json:"umurEkonomis"`
+	UmurPenggunaan  int     `json:"umurPenggunaan"`
+	NilaiBuku       float64 `json:"nilaiBuku"`
+	BebanPenyusutan float64 `json:"bebanPenyusutan"`
+	Koreksi         float64 `json:"koreksi"`
+	Ket             string  `json:"ket"`
 }
 
 // BarangKeluar model
 type BarangKeluar struct {
-	Nama      string `json:"nama,omitempty"`
-	ID        int    `json:"id,omitempty"`
-	BarangID  int    `json:"barangID,omitempty"`
-	Jml       int    `json:"jml,omitempty"`
-	TglKeluar int    `json:"tglKeluar,omitempty"`
+	Nama      string `json:"nama"`
+	ID        int    `json:"id"`
+	BarangID  int    `json:"barangID"`
+	Jml       int    `json:"jml"`
+	TglKeluar int    `json:"tglKeluar"`
 }
 
 // Jurnal model
 type Jurnal struct {
 	Barang
-	Penyusutan float64 `json:"penyusutan,omitempty"`
+	Penyusutan float64 `json:"penyusutan"`
 }

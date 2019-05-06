@@ -2,6 +2,7 @@ package repo
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	// sqlite driver
@@ -22,7 +23,7 @@ func InitDB() {
 
 	stmts := []string{
 		"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT, role TEXT);",
-		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, jml INTEGER, ket TEXT, harga REAL, nilaiSisa REAL, umurEkonomis INTEGER, umurPenggunaan INTEGER, nilaiBuku REAL, bebanPenyusutan REAL);",
+		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, jml INTEGER, ket TEXT, harga REAL, nilaiSisa REAL, umurEkonomis INTEGER, umurPenggunaan INTEGER, nilaiBuku REAL, bebanPenyusutan REAL, koreksi REAL);",
 		"CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, barangID INTEGER, jml INTEGER, tglKeluar NUMERIC, FOREIGN KEY (barangID) REFERENCES barang(id));",
 	}
 
@@ -81,14 +82,14 @@ func GetAllUser() ([]models.User, error) {
 
 // CreateBarang insert new barang into db
 func CreateBarang(brg *models.Barang) error {
-	stm, err := db.Prepare(`INSERT INTO barang (kode, nama, reg, merk, jml, ket, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga, nilaiSisa, umurEkonomis, umurPenggunaan, nilaiBuku, bebanPenyusutan) 
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+	stm, err := db.Prepare(`INSERT INTO barang (kode, nama, reg, merk, jml, ket, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga, nilaiSisa, umurEkonomis, umurPenggunaan, nilaiBuku, bebanPenyusutan, koreksi) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 
-	res, err := stm.Exec(brg.Kode, brg.Nama, brg.Reg, brg.Merk, brg.Jml, brg.Ket, brg.Ukuran, brg.Bahan, brg.TglMasuk, brg.TipeSpek, brg.NomorSpek, brg.CaraPerolehan, brg.Harga, brg.NilaiSisa, brg.UmurEkonomis, brg.UmurPenggunaan, brg.NilaiBuku, brg.BebanPenyusutan)
+	res, err := stm.Exec(brg.Kode, brg.Nama, brg.Reg, brg.Merk, brg.Jml, brg.Ket, brg.Ukuran, brg.Bahan, brg.TglMasuk, brg.TipeSpek, brg.NomorSpek, brg.CaraPerolehan, brg.Harga, brg.NilaiSisa, brg.UmurEkonomis, brg.UmurPenggunaan, brg.NilaiBuku, brg.BebanPenyusutan, brg.Koreksi)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -126,7 +127,7 @@ func CreateBarangKeluar(brg *models.BarangKeluar) error {
 // GetBarang get barang by its ID
 func GetBarang(id int, brg *models.Barang) error {
 	q := `SELECT 
-		id, kode, nama, reg, merk, jml, ket, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga, nilaiSisa, umurEkonomis, umurPenggunaan, nilaiBuku, bebanPenyusutan
+		id, kode, nama, reg, merk, jml, ket, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga, nilaiSisa, umurEkonomis, umurPenggunaan, nilaiBuku, bebanPenyusutan, koreksi
 		FROM barang
 		WHERE id = ?`
 	rows, err := db.Query(q, id)
@@ -136,7 +137,7 @@ func GetBarang(id int, brg *models.Barang) error {
 	}
 
 	for rows.Next() {
-		if err := rows.Scan(&brg.ID, &brg.Kode, &brg.Nama, &brg.Reg, &brg.Merk, &brg.Jml, &brg.Ket, &brg.Ukuran, &brg.Bahan, &brg.TglMasuk, &brg.TipeSpek, &brg.NomorSpek, &brg.CaraPerolehan, &brg.Harga, &brg.NilaiSisa, &brg.UmurEkonomis, &brg.UmurPenggunaan, &brg.NilaiBuku, &brg.BebanPenyusutan); err != nil {
+		if err := rows.Scan(&brg.ID, &brg.Kode, &brg.Nama, &brg.Reg, &brg.Merk, &brg.Jml, &brg.Ket, &brg.Ukuran, &brg.Bahan, &brg.TglMasuk, &brg.TipeSpek, &brg.NomorSpek, &brg.CaraPerolehan, &brg.Harga, &brg.NilaiSisa, &brg.UmurEkonomis, &brg.UmurPenggunaan, &brg.NilaiBuku, &brg.BebanPenyusutan, &brg.Koreksi); err != nil {
 			log.Fatal(err)
 			return err
 		}
@@ -168,6 +169,20 @@ func GetAllBarang() ([]models.Barang, error) {
 	}
 
 	return brgs, nil
+}
+
+// CheckBarangExists check if barang exists by its ID
+func CheckBarangExists(barangID int) (bool, error) {
+	var exists bool
+	q := fmt.Sprintf("SELECT COUNT(1) FROM barang WHERE id = %d", barangID)
+	err := db.QueryRow(q).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	log.Printf("exists, %v", exists)
+
+	return exists, nil
 }
 
 // GetAllBarangKeluar get all barnag keluar in db
