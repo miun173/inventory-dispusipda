@@ -94,10 +94,6 @@ export class BarangKeluar extends React.Component {
     const { newBarangKel, barangs } = this.state;
 
     const cols = [{
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    }, {
       title: 'ID Barang',
       dataIndex: 'barangID',
       key: 'barangId',
@@ -109,7 +105,12 @@ export class BarangKeluar extends React.Component {
       title: 'Jumlah',
       dataIndex: 'jml',
       key: 'jml',
-    },];
+    }, {
+      title: 'Tgl Keluar',
+      dataIndex: 'tglKeluar',
+      key: 'tglKeluar',
+      render: (d) => <span>{(new Date(d)).toLocaleDateString()}</span> 
+    }, ];
 
     return <Container>
       <h2>Barang Keluar</h2>
@@ -138,7 +139,7 @@ export class BarangKeluar extends React.Component {
         </Card>
       </form>
 
-      <Table columns={cols} dataSource={barangs} />
+      <Table style={{ width: '800px' }} columns={cols} dataSource={barangs} scroll={{ x: 800 }} />
     </Container>
   }
 }
