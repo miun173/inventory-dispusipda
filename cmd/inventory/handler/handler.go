@@ -94,6 +94,7 @@ func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(brg)
 }
 
+// GetAllBarangKeluar list all available barang keluar
 func GetAllBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	brgs, err := repo.GetAllBarangKeluar()
 	if err != nil {
@@ -106,7 +107,7 @@ func GetAllBarangKeluar(w http.ResponseWriter, r *http.Request) {
 
 // GetJurnal list all available jurnal
 func GetJurnal(w http.ResponseWriter, r *http.Request) {
-	var jurnals []models.Jurnal
+	jurnals := make([]models.Jurnal, 0)
 	brgs, err := repo.GetAllBarang()
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
