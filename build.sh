@@ -1,13 +1,17 @@
 #!/bin/bash
+
+VERSION=$(git rev-parse --short HEAD)
+
 # create output folder
-mkdir -p output
-rm -rf ./output/*
+mkdir -p output/$VERSION
+
+rm -rf output/$VERSION/*
 
 # build go binary into output folder
 # GOOS=$OS GOARCH=$ARCH go build -o output/inventory ./cmd/inventory
-GOOS=linux GOARCH=amd64 go build -o output/inventory-linux-amd64 ./cmd/inventory
-GOOS=windows GOARCH=amd64 go build -o output/inventory-win-amd64.exe ./cmd/inventory
-GOOS=windows GOARCH=386 go build -o output/inventory-win-386.exe ./cmd/inventory
+GOOS=linux GOARCH=amd64 go build -o "output/$VERSION/inventory-linux-amd64-$VERSION" ./cmd/inventory
+GOOS=windows GOARCH=amd64 go build -o "output/$VERSION/inventory-win-amd64-$VERSION.exe" ./cmd/inventory
+GOOS=windows GOARCH=386 go build -o "output/$VERSION/inventory-win-386-$VERSION.exe" ./cmd/inventory
 
 # build reactjs into output folder
-cd web && npm run build && rm -rf ../output/static && cp -r build ../output/static
+cd web && npm run build && rm -rf "../output/$VERSION/static" && cp -r build "../output/$VERSION/static"
