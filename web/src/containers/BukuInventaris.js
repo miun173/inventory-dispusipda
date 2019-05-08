@@ -4,7 +4,7 @@ import {
   Table
 } from 'antd';
 
-export class Jurnal extends React.Component {
+export class BukuInventaris extends React.Component {
   state = {
     jurnal: [],
   }

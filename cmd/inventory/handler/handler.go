@@ -47,15 +47,31 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 // Login handle user login
 func Login(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	_ = json.NewDecoder(r.Body).Decode(&user)
 
+	var userRepo models.User
+	repo.GetUser(&userRepo)
+
+	if userRepo.Username != user.Username {
+		w.WriteHeader(http.StatusBadGateway)
+		json.NewEncoder(w).Encode(map[string]string{"error": "unknown user"})
+	}
+	if userRepo.Password != user.Password {
+		w.WriteHeader(http.StatusBadGateway)
+		json.NewEncoder(w).Encode(map[string]string{"error": "wrong password"})
+	}
 }
 
 // CreateBarang handle create barang
 func CreateBarang(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	// barang diambil dari inputan
 	var brg models.Barang
 	_ = json.NewDecoder(r.Body).Decode(&brg)
+
+	// barang dimasukkan database
 	err := repo.CreateBarang(&brg)
 	if err != nil {
 		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
@@ -147,8 +163,9 @@ func GetAllBarang(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(brgs)
 }
 
-// GetJurnal list all available jurnal
+// GetJurnal list all available jurnal/inventaris
 func GetJurnal(w http.ResponseWriter, r *http.Request) {
+	// inisiasi
 	jurnals := make([]models.Jurnal, 0)
 	brgs, err := repo.GetAllBarang()
 	if err != nil {

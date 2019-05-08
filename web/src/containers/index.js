@@ -1,3 +1,4 @@
 export * from './BarangMasuk';
-export * from './Jurnal';
+export * from './BukuInventaris';
 export * from './BarangKeluar';
+export * from './Login';

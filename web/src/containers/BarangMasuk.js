@@ -135,6 +135,10 @@ export class BarangMasuk extends React.Component {
     const { newBarang, barangs } = this.state;
 
     const cols = [{
+      title: 'ID Barang',
+      dataIndex: 'id',
+      key: 'id',
+    }, {
       title: 'Kode',
       dataIndex: 'kode',
       key: 'kode',

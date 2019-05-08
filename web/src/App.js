@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
 import { Icon } from 'antd';
+import axios from 'axios';
 import styled from 'styled-components';
 import {
   BrowserRouter as Router,
   Route,
   Link,
+  Switch,
 } from 'react-router-dom';
 import {
   BarangMasuk,
   BarangKeluar,
-  Jurnal,
+  BukuInventaris,
+  Login,
 } from './containers'
+import {
+  RoutePetugasBarang, RouteDivisi,
+} from './routes';
+import { Provider } from './store';
 
 const Container = styled.div`
   display: flex;
@@ -45,38 +52,92 @@ const Title = styled.div`
   }
 `
 
+const LeftNavComp = () => <>
+  <LeftNav>
+    <Title>
+      <Link to='/'>
+        <h3>Inventory Barang</h3>
+      </Link>
+    </Title>
+    <br />
+    <LeftMenu>
+      <Icon type='book' style={{ color: '#fff', marginRight: '8px' }} />
+      <Link to='/inventaris/buku'>Buku Inventaris</Link>
+    </LeftMenu>
+    <br />
+    <LeftMenu>
+      <Icon type='import' style={{ color: '#fff', marginRight: '8px' }} />
+      <Link to='/inventaris/barang-masuk'>Barang Masuk</Link>
+    </LeftMenu>
+    <br />
+    <LeftMenu>
+      <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
+      <Link to='/barang-keluar'>Barang Keluar</Link>
+    </LeftMenu>
+  </LeftNav>
+</>
+
+const initState = {
+  userInfo: {
+    auth: false,
+    role: '',
+    id: '',
+    name: '',
+    token: '',
+  },
+};
+
 class App extends Component {
+  _isMounted = false;
+  state = { ...initState }
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  login = async ({ username, password }, cb = () => {}) => {
+    try {
+      const { data } = await axios('/api/login', {
+        method: 'POST',
+        data: { username, password }
+      });
+
+      console.log(data);
+      if (this._isMounted) return;
+      this.setState({
+        userInfo: { ...data, auth: true },
+      }, () => {
+        cb();
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  getAuthHeader = () => this.state.userInfo.token 
+
   render() {
+    const { userInfo } = this.state;
     return (
+      <Provider value={{
+        user: userInfo,
+        login: this.login,
+        authHeader: this.getAuthHeader(),
+      }}>
       <Router>
-      <Container>
-        <LeftNav>
-          <Title>
-            <Link to='/'>
-              <h3>Inventory Barang</h3>
-            </Link>
-          </Title>
-          <br />
-          <LeftMenu>
-            <Icon type='book' style={{ color: '#fff', marginRight: '8px' }} />
-            <Link to='/jurnal'>Jurnal</Link>
-          </LeftMenu>
-          <br />
-          <LeftMenu>
-            <Icon type='import' style={{ color: '#fff', marginRight: '8px' }} />
-            <Link to='/barang'>Barang Masuk</Link>
-          </LeftMenu>
-          <br />
-          <LeftMenu>
-            <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
-            <Link to='/barang-keluar'>Barang Keluar</Link>
-          </LeftMenu>
-        </LeftNav>
-          <Route path='/barang' component={BarangMasuk} />
-          <Route path='/jurnal' component={Jurnal} />
-          <Route path='/barang-keluar' component={BarangKeluar} />
-      </Container>
+        <Container>
+            { userInfo.auth && <LeftNavComp /> }
+              <RoutePetugasBarang path='/inventaris/barang-masuk' component={BarangMasuk} />
+              <RoutePetugasBarang path='/inventaris/buku' component={BukuInventaris} />
+              <RouteDivisi path='/barang-keluar' component={BarangKeluar} />
+              <Route path='/' component={Login} />
+        </Container>
       </Router>
+      </Provider>
     );
   }
 }

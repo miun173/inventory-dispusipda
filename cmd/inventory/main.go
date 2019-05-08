@@ -34,6 +34,7 @@ func main() {
 	router.HandleFunc("/api/ping", handler.Ping).Methods("GET")
 
 	// users
+	router.HandleFunc("/api/login", handler.Login).Methods("POST")
 	router.HandleFunc("/api/users", handler.GetAllUsers).Methods("GET")
 	router.HandleFunc("/api/users", handler.CreateUser).Methods("POST")
 
