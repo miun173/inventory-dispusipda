@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/pkg/errors"
+
 	// sqlite driver
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
@@ -17,7 +19,7 @@ func InitDB() {
 	var err error
 	db, err = sql.Open("sqlite3", "./inventory.db")
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("%+v\n", errors.WithStack(err))
 		return
 	}
 
@@ -32,10 +34,11 @@ func InitDB() {
 	for _, s := range stmts {
 		statement, err := db.Prepare(s)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("%+v\n", errors.WithStack(err))
 			return
 		}
 		statement.Exec()
+		statement.Close()
 	}
 
 	log.Println("connect to db")
@@ -43,17 +46,20 @@ func InitDB() {
 
 // CreateUser insert new user to db
 func CreateUser(user *models.User) error {
-	stm, err := db.Prepare("INSERT INTO users (firstname, lastname, password) VALUES (?, ?, ?)")
+	stm, err := db.Prepare("INSERT INTO users (firstname, lastname, password) VALUES (?, ?, ?, ?)")
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "create user error")
+		log.Printf("%+v\n", err)
 		return err
 	}
 
-	res, err := stm.Exec(user.FirstName, user.LastName, user.Password)
+	res, err := stm.Exec(user.FirstName, user.LastName, user.Password, user.Role)
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "create user error")
+		log.Printf("%+v\n", err)
 		return err
 	}
+	defer stm.Close()
 
 	id, err := res.LastInsertId()
 	user.ID = int(id)
@@ -61,26 +67,35 @@ func CreateUser(user *models.User) error {
 }
 
 // GetUser find user by given username
-func GetUser(user *models.User) {
-	var u models.User
-	q := fmt.Sprintf("SELECT id, firstname, lastname, password FROM users WHERE username=%s", user.Username)
-	db.QueryRow(q).Scan(&u)
+func GetUser(user *models.User) error {
+	q := "SELECT id, firstname, lastname, password, role FROM users WHERE username= ? "
+	err := db.QueryRow(q, user.Username).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Password, &user.Role)
+	if err != nil {
+		err = errors.Wrap(err, "select user error")
+		log.Printf("%+v\n", err)
+		return err
+	}
+
+	return nil
 }
 
 // GetAllUser query all users
 func GetAllUser() ([]models.User, error) {
 	users := make([]models.User, 0)
-	q := "SELECT id, firstname, lastname FROM users"
+	q := "SELECT id, firstname, lastname, role FROM users"
 	rows, err := db.Query(q)
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "select all user error")
+		log.Printf("%+v\n", err)
 		return users, err
 	}
+	defer rows.Close()
 
 	var u models.User
 	for rows.Next() {
-		if err := rows.Scan(&u.ID, &u.FirstName, &u.LastName); err != nil {
-			log.Fatal(err)
+		if err := rows.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Role); err != nil {
+			err = errors.Wrap(err, "scan users row error")
+			log.Printf("%+v\n", err)
 			return users, err
 		}
 		users = append(users, u)
@@ -94,13 +109,17 @@ func CreateBarang(brg *models.Barang) error {
 	stm, err := db.Prepare(`INSERT INTO barang (kode, nama, reg, merk, jml, ket, ukuran, bahan, tglMasuk, tipeSpek, nomorSpek, caraPerolehan, harga, nilaiSisa, umurEkonomis, umurPenggunaan, nilaiBuku, bebanPenyusutan, koreksi) 
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "insert barang error")
+		log.Printf("%+v\n", err)
 		return err
 	}
+	defer stm.Close()
 
 	res, err := stm.Exec(brg.Kode, brg.Nama, brg.Reg, brg.Merk, brg.Jml, brg.Ket, brg.Ukuran, brg.Bahan, brg.TglMasuk, brg.TipeSpek, brg.NomorSpek, brg.CaraPerolehan, brg.Harga, brg.NilaiSisa, brg.UmurEkonomis, brg.UmurPenggunaan, brg.NilaiBuku, brg.BebanPenyusutan, brg.Koreksi)
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "insert barang error")
+		log.Printf("%+v\n", err)
+
 		return err
 	}
 
@@ -115,15 +134,16 @@ func CreateBarangKeluar(brg *models.BarangKeluar) error {
 	stm, err := db.Prepare(`INSERT INTO barangKeluar (barangID, jml, tglKeluar) 
 		VALUES (?, ?, ?)`)
 	if err != nil {
-		log.Println("filed create barang")
-		log.Println(brg)
-		log.Fatal(err)
+		err = errors.Wrap(err, "insert barang keluar error")
+		log.Printf("%+v\n", err)
 		return err
 	}
+	defer stm.Close()
 
 	res, err := stm.Exec(brg.BarangID, brg.Jml, brg.TglKeluar)
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "insert barang keluar error")
+		log.Printf("%+v\n", err)
 		return err
 	}
 
@@ -141,13 +161,16 @@ func GetBarang(id int, brg *models.Barang) error {
 		WHERE id = ?`
 	rows, err := db.Query(q, id)
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "select barang error")
+		log.Printf("%+v\n", err)
 		return err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		if err := rows.Scan(&brg.ID, &brg.Kode, &brg.Nama, &brg.Reg, &brg.Merk, &brg.Jml, &brg.Ket, &brg.Ukuran, &brg.Bahan, &brg.TglMasuk, &brg.TipeSpek, &brg.NomorSpek, &brg.CaraPerolehan, &brg.Harga, &brg.NilaiSisa, &brg.UmurEkonomis, &brg.UmurPenggunaan, &brg.NilaiBuku, &brg.BebanPenyusutan, &brg.Koreksi); err != nil {
-			log.Fatal(err)
+			err = errors.Wrap(err, "scan barang rows error")
+			log.Printf("%+v\n", err)
 			return err
 		}
 	}
@@ -163,14 +186,18 @@ func GetAllBarang() ([]models.Barang, error) {
 
 	rows, err := db.Query(q)
 	if err != nil {
-		log.Fatal(err)
+		err = errors.Wrap(err, "select all barang error")
+		log.Printf("%+v\n", err)
 		return nil, err
 	}
+	defer rows.Close()
+
 	brgs := make([]models.Barang, 0)
 	var brg models.Barang
 	for rows.Next() {
 		if err := rows.Scan(&brg.ID, &brg.Kode, &brg.Nama, &brg.Reg, &brg.Merk, &brg.Jml, &brg.Ket, &brg.Ukuran, &brg.Bahan, &brg.TglMasuk, &brg.TipeSpek, &brg.NomorSpek, &brg.CaraPerolehan, &brg.Harga, &brg.NilaiSisa, &brg.UmurEkonomis, &brg.UmurPenggunaan, &brg.NilaiBuku, &brg.BebanPenyusutan); err != nil {
-			log.Fatal(err)
+			err = errors.Wrap(err, "scan barang rows error")
+			log.Printf("%+v\n", err)
 			return nil, err
 		}
 
@@ -186,6 +213,8 @@ func CheckBarangExists(barangID int) (bool, error) {
 	q := fmt.Sprintf("SELECT COUNT(1) FROM barang WHERE id = %d", barangID)
 	err := db.QueryRow(q).Scan(&exists)
 	if err != nil {
+		err = errors.Wrap(err, "check barang exists error")
+		log.Printf("%+v\n", err)
 		return false, err
 	}
 
@@ -204,12 +233,17 @@ func GetAllBarangKeluar() ([]models.BarangKeluar, error) {
 
 	rows, err := db.Query(q)
 	if err != nil {
+		err = errors.Wrap(err, "get all barang keluar error")
+		log.Printf("%+v\n", err)
 		return nil, err
 	}
+	defer rows.Close()
 
 	var b models.BarangKeluar
 	for rows.Next() {
 		if err := rows.Scan(&b.ID, &b.BarangID, &b.Jml, &b.TglKeluar, &b.Nama); err != nil {
+			err = errors.Wrap(err, "scan barang keluar error")
+			log.Printf("%+v\n", err)
 			return nil, err
 		}
 
