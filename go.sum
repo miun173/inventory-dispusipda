@@ -4,3 +4,5 @@ github.com/mattn/go-sqlite3 v1.10.0 h1:jbhqpg7tQe4SupckyijYiy0mJJ/pRyHvXf7JdWK86
 github.com/mattn/go-sqlite3 v1.10.0/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=
 github.com/miun173/go-reactjs v0.0.0-20190420003434-7a665abf3c46 h1:BGKPgYoG/itfec5UwY1as1RwtpEz8fjkmbKSU0+A+00=
 github.com/miun173/go-reactjs v0.0.0-20190420003434-7a665abf3c46/go.mod h1:mZeDZPNmerrSyz0EalAkD1RYLVnL9p0EgRgjeHAido0=
+github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
+github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

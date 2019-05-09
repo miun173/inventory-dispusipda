@@ -27,7 +27,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&user)
 	err := repo.CreateUser(&user)
 	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -38,7 +38,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := repo.GetAllUser()
 	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -74,7 +74,7 @@ func CreateBarang(w http.ResponseWriter, r *http.Request) {
 	// barang dimasukkan database
 	err := repo.CreateBarang(&brg)
 	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -95,7 +95,7 @@ func GetBarang(w http.ResponseWriter, r *http.Request) {
 	var brg models.Barang
 	err = repo.GetBarang(id, &brg)
 	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -111,7 +111,7 @@ func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	isBarangExists, err := repo.CheckBarangExists(brg.BarangID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -126,7 +126,7 @@ func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	err = repo.CreateBarangKeluar(&brg)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -141,7 +141,7 @@ func GetAllBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	brgs, err := repo.GetAllBarangKeluar()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -155,7 +155,7 @@ func GetAllBarang(w http.ResponseWriter, r *http.Request) {
 	brgs, err := repo.GetAllBarang()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
@@ -169,7 +169,7 @@ func GetJurnal(w http.ResponseWriter, r *http.Request) {
 	jurnals := make([]models.Jurnal, 0)
 	brgs, err := repo.GetAllBarang()
 	if err != nil {
-		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
 		return
 	}
 
