@@ -52,16 +52,22 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&user)
 
 	var userRepo models.User
-	repo.GetUser(&userRepo)
+	err := repo.GetUserByUsername(&userRepo, user.Username)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
+		return
+	}
 
-	if userRepo.Username != user.Username {
+	if userRepo.ID == 0 || userRepo.Password != user.Password {
 		w.WriteHeader(http.StatusBadGateway)
-		json.NewEncoder(w).Encode(map[string]string{"error": "unknown user"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "incorect username or password"})
+		return
 	}
-	if userRepo.Password != user.Password {
-		w.WriteHeader(http.StatusBadGateway)
-		json.NewEncoder(w).Encode(map[string]string{"error": "wrong password"})
-	}
+
+	userRepo.Password = ""
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(userRepo)
 }
 
 // CreateBarang handle create barang

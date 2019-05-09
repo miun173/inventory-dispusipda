@@ -46,14 +46,14 @@ func InitDB() {
 
 // CreateUser insert new user to db
 func CreateUser(user *models.User) error {
-	stm, err := db.Prepare("INSERT INTO users (firstname, lastname, password, role) VALUES (?, ?, ?, ?)")
+	stm, err := db.Prepare("INSERT INTO users (username, firstname, lastname, password, role) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		err = errors.Wrap(err, "create user error")
 		log.Printf("%+v\n", err)
 		return err
 	}
 
-	res, err := stm.Exec(user.FirstName, user.LastName, user.Password, user.Role)
+	res, err := stm.Exec(user.Username, user.FirstName, user.LastName, user.Password, user.Role)
 	if err != nil {
 		err = errors.Wrap(err, "create user error")
 		log.Printf("%+v\n", err)
@@ -66,11 +66,12 @@ func CreateUser(user *models.User) error {
 	return nil
 }
 
-// GetUser find user by given username
-func GetUser(user *models.User) error {
+// GetUserByUsername find user by given username
+func GetUserByUsername(user *models.User, username string) error {
 	q := "SELECT id, firstname, lastname, password, role FROM users WHERE username= ? "
-	err := db.QueryRow(q, user.Username).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Password, &user.Role)
-	if err != nil {
+	err := db.QueryRow(q, username).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Password, &user.Role)
+
+	if err != nil && err != sql.ErrNoRows {
 		err = errors.Wrap(err, "select user error")
 		log.Printf("%+v\n", err)
 		return err
@@ -82,7 +83,7 @@ func GetUser(user *models.User) error {
 // GetAllUser query all users
 func GetAllUser() ([]models.User, error) {
 	users := make([]models.User, 0)
-	q := "SELECT id, firstname, lastname, role FROM users"
+	q := "SELECT id, username, firstname, lastname, role FROM users"
 	rows, err := db.Query(q)
 	if err != nil {
 		err = errors.Wrap(err, "select all user error")
@@ -93,7 +94,7 @@ func GetAllUser() ([]models.User, error) {
 
 	var u models.User
 	for rows.Next() {
-		if err := rows.Scan(&u.ID, &u.FirstName, &u.LastName, &u.Role); err != nil {
+		if err := rows.Scan(&u.ID, &u.Username, &u.FirstName, &u.LastName, &u.Role); err != nil {
 			err = errors.Wrap(err, "scan users row error")
 			log.Printf("%+v\n", err)
 			return users, err
