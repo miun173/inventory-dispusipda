@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/urfave/negroni"
+
 	"os"
 
 	"github.com/gorilla/mux"
@@ -51,6 +53,9 @@ func main() {
 	// frontend
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))
 
+	n := negroni.Classic() // Includes some default middlewares
+	n.UseHandler(router)
+
 	log.Printf("Starting server on http://localhost:%s ...", port)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	log.Fatal(http.ListenAndServe(":"+port, n))
 }
