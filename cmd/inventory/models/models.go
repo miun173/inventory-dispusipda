@@ -14,6 +14,7 @@ type User struct {
 	FirstName string `json:"firstName,omitempty"`
 	LastName  string `json:"lastName,omitempty"`
 	Password  string `json:"password,omitempty"`
+	Role      string `json:"role"`
 }
 
 // Barang model

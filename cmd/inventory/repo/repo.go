@@ -46,7 +46,7 @@ func InitDB() {
 
 // CreateUser insert new user to db
 func CreateUser(user *models.User) error {
-	stm, err := db.Prepare("INSERT INTO users (firstname, lastname, password) VALUES (?, ?, ?, ?)")
+	stm, err := db.Prepare("INSERT INTO users (firstname, lastname, password, role) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		err = errors.Wrap(err, "create user error")
 		log.Printf("%+v\n", err)
