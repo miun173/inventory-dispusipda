@@ -57,8 +57,17 @@ class LoginComp extends React.Component {
   render() {
     const { username, password } = this.state;
 
+    const defPage = {
+      pejabat: '/acc/rkbmd',
+      petugasBarang: '/inventaris/buku',
+      divisi: '/barang-keluar',
+    };
+
+    console.log('auth', this.context.user.auth)
+    console.log('role', this.context.user.role)
+
     return this.context.user.auth 
-      ? <Redirect to='/store/manager' /> 
+      ? <Redirect to={defPage[this.context.user.role]} /> 
       : (<div style={{ marginTop: '32px', width: '100%' }}>
         <LoginForm 
               title='Login Store'
@@ -67,8 +76,8 @@ class LoginComp extends React.Component {
               handlePoInput={this.handlePoInput}
               onLogin={(e) => {
                 e.preventDefault();
-                this.context.login({ username, password }, () => {
-                  this.props.history.push('/store/manager');
+                this.context.login({ username, password }, (role) => {
+                  this.props.history.push(defPage[role]);
                 })} 
               } />
       </div>);

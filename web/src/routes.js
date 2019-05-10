@@ -12,7 +12,7 @@ export const RoutePejabat = ({ component: Component, ...rest }) => (
           render={props =>
             user.auth === true && user.role === 'pejabat'
             ? <Component {...props} />
-            : <Redirect to="/" />
+            : <Redirect to="/login" />
           }
         />
       )}

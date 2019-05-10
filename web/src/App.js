@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon } from 'antd';
+import { Icon, Button } from 'antd';
 import axios from 'axios';
 import styled from 'styled-components';
 import {
@@ -7,6 +7,7 @@ import {
   Route,
   Link,
   Switch,
+  Redirect,
 } from 'react-router-dom';
 import {
   BarangMasuk,
@@ -31,8 +32,14 @@ const LeftNav = styled.div`
 
 const LeftMenu = styled.div`
   margin-left: 16px;
+  padding: 8px;
   a {
     color: #fff;
+  }
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.7;
   }
 `
 
@@ -52,7 +59,7 @@ const Title = styled.div`
   }
 `
 
-const LeftNavComp = () => <>
+const LeftNavComp = ({ role }) => <>
   <LeftNav>
     <Title>
       <Link to='/'>
@@ -60,20 +67,52 @@ const LeftNavComp = () => <>
       </Link>
     </Title>
     <br />
-    <LeftMenu>
-      <Icon type='book' style={{ color: '#fff', marginRight: '8px' }} />
-      <Link to='/inventaris/buku'>Buku Inventaris</Link>
-    </LeftMenu>
+    { role === 'petugasBarang' && <>
+      <Link to='/inventaris/buku' style={{ color: '#fff' }}>
+        <LeftMenu>
+          <Icon type='book' style={{ color: '#fff', marginRight: '8px' }} />
+          Buku Inventaris
+        </LeftMenu>
+      </Link>
+      <br />
+
+      <Link to='/inventaris/barang-masuk' style={{ color: '#fff' }}>
+        <LeftMenu>
+          <Icon type='file-search' style={{ color: '#fff', marginRight: '8px' }} />
+          Barang Masuk
+        </LeftMenu>
+      </Link>
+      <br />
+    </> }
+
+    { role === 'divisi' && <>
+      <Link to='/barang-keluar' style={{ color: '#fff' }}>
+        <LeftMenu>
+        <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
+        Barang Keluar
+        </LeftMenu>
+      </Link>
+      <br />
+    </> }
+
+    { role === 'pejabat' && <>
+      <Link to='/acc/rkbmd' style={{ color: '#fff' }}>
+        <LeftMenu>
+          <Icon type='file-protect' style={{ color: '#fff', marginRight: '8px' }} />
+          RKBMD
+        </LeftMenu>
+      </Link>
+      <br />
+    </> }
+
+    <Link to='/logout' style={{ color: '#fff' }}>
+      <LeftMenu>
+          <Icon type="logout" style={{ color: '#fff', marginRight: '8px' }} />
+          Logout
+      </LeftMenu>
+    </Link>
     <br />
-    <LeftMenu>
-      <Icon type='import' style={{ color: '#fff', marginRight: '8px' }} />
-      <Link to='/inventaris/barang-masuk'>Barang Masuk</Link>
-    </LeftMenu>
-    <br />
-    <LeftMenu>
-      <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
-      <Link to='/barang-keluar'>Barang Keluar</Link>
-    </LeftMenu>
+
   </LeftNav>
 </>
 
@@ -107,15 +146,23 @@ class App extends Component {
       });
 
       console.log(data);
-      if (this._isMounted) return;
+      if (!this._isMounted) return;
       this.setState({
         userInfo: { ...data, auth: true },
       }, () => {
-        cb();
+        cb(data.role)
       });
     } catch (e) {
       console.error(e);
     }
+  }
+
+  logout = () => {
+    this.setState({
+      ...initState
+    });
+
+    return <Redirect to='/' />
   }
 
   getAuthHeader = () => this.state.userInfo.token 
@@ -130,11 +177,20 @@ class App extends Component {
       }}>
       <Router>
         <Container>
-            { userInfo.auth && <LeftNavComp /> }
-              <RoutePetugasBarang path='/inventaris/barang-masuk' component={BarangMasuk} />
-              <RoutePetugasBarang path='/inventaris/buku' component={BukuInventaris} />
-              <RouteDivisi path='/barang-keluar' component={BarangKeluar} />
-              <Route path='/' component={Login} />
+            { userInfo.auth && <LeftNavComp role={userInfo.role} /> }
+              <Switch>
+                <RoutePetugasBarang path='/inventaris/buku' component={BukuInventaris} />
+                <RoutePetugasBarang path='/inventaris/barang-masuk' component={BarangMasuk} />
+                <RouteDivisi path='/barang-keluar' component={BarangKeluar} />
+                <Route path='/login' component={Login} />
+                <Route path='/logout' component={() => {
+                  return this.logout();
+                }} />
+                <Route path='/' component={() => <main>
+                  <h1>Home</h1>
+                  <Button><Link to='/login'>Login</Link></Button>
+                </main>} />
+              </Switch>
         </Container>
       </Router>
       </Provider>
