@@ -241,26 +241,6 @@ export class BarangMasuk extends React.Component {
               <Input type='number' value={newBarang.umurEkonomis} name='umurEkonomis' onChange={this.handleBarangInput}/>
             </Card>
           </SidedCard>
-          <SidedCard>
-            <Card>
-              <label>Umur Penggunaan</label>
-              <Input type='number' value={newBarang.umurPenggunaan} name='umurPenggunaan' onChange={this.handleBarangInput}/>
-            </Card>
-            <Card>
-              <label>Nilai Buku</label>
-              <Input type='number' value={newBarang.nilaiBuku} name='nilaiBuku' onChange={this.handleBarangInput}/>
-            </Card>
-          </SidedCard>
-          <SidedCard>
-            <Card>
-              <label>Beban Penyusutan</label>
-              <Input type='number' value={newBarang.bebanPenyusutan} name='bebanPenyusutan' onChange={this.handleBarangInput}/>
-            </Card>
-            <Card>
-              <label>Koreksi</label>
-              <Input type='number' value={newBarang.koreksi} name='koreksi' onChange={this.handleBarangInput}/>
-            </Card>
-          </SidedCard>
           <Button
             onClick={this.handleSubmit}
             style={{ margin: '8px', width: '100%' }} 
