@@ -2,8 +2,10 @@ package repo
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -24,7 +26,7 @@ func InitDB() {
 	}
 
 	stmts := []string{
-		"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT, role TEXT);",
+		"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT, role TEXT, token TEXT);",
 		"CREATE TABLE IF NOT EXISTS rkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, tglBuat NUMERIC);",
 		"CREATE TABLE IF NOT EXISTS detailRkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, rkbmdID INTEGER, namaBarang TEXT, jml NUMERIC, status TEXT, FOREIGN KEY (rkbmdID) REFERENCES rkbmd(id))",
 		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, jml INTEGER, ket TEXT, harga REAL, nilaiSisa REAL, umurEkonomis INTEGER, umurPenggunaan INTEGER, nilaiBuku REAL, bebanPenyusutan REAL, koreksi REAL);",
@@ -46,14 +48,17 @@ func InitDB() {
 
 // CreateUser insert new user to db
 func CreateUser(user *models.User) error {
-	stm, err := db.Prepare("INSERT INTO users (username, firstname, lastname, password, role) VALUES (?, ?, ?, ?, ?)")
+	stm, err := db.Prepare("INSERT INTO users (username, firstname, lastname, password, role, token) VALUES (?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		err = errors.Wrap(err, "create user error")
 		log.Printf("%+v\n", err)
 		return err
 	}
 
-	res, err := stm.Exec(user.Username, user.FirstName, user.LastName, user.Password, user.Role)
+	secret := time.Now().String()
+	token := base64.StdEncoding.EncodeToString([]byte(string(secret)))
+
+	res, err := stm.Exec(user.Username, user.FirstName, user.LastName, user.Password, user.Role, token)
 	if err != nil {
 		err = errors.Wrap(err, "create user error")
 		log.Printf("%+v\n", err)
@@ -66,10 +71,23 @@ func CreateUser(user *models.User) error {
 	return nil
 }
 
+// GetUserByID get user by id
+func GetUserByID(user *models.User, userID int) error {
+	q := "SELECT id, firstname, lastname, password, role, token FROM users WHERE id = ? "
+	err := db.QueryRow(q, userID).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Password, &user.Role, &user.Token)
+	if err != nil && err != sql.ErrNoRows {
+		err = errors.Wrap(err, "select user error")
+		log.Printf("%+v\n", err)
+		return err
+	}
+
+	return nil
+}
+
 // GetUserByUsername find user by given username
 func GetUserByUsername(user *models.User, username string) error {
-	q := "SELECT id, firstname, lastname, password, role FROM users WHERE username= ? "
-	err := db.QueryRow(q, username).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Password, &user.Role)
+	q := "SELECT id, firstname, lastname, password, role, token FROM users WHERE username= ? "
+	err := db.QueryRow(q, username).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Password, &user.Role, &user.Token)
 
 	if err != nil && err != sql.ErrNoRows {
 		err = errors.Wrap(err, "select user error")
@@ -83,7 +101,7 @@ func GetUserByUsername(user *models.User, username string) error {
 // GetAllUser query all users
 func GetAllUser() ([]models.User, error) {
 	users := make([]models.User, 0)
-	q := "SELECT id, username, firstname, lastname, role FROM users"
+	q := "SELECT id, username, firstname, lastname, role, token FROM users"
 	rows, err := db.Query(q)
 	if err != nil {
 		err = errors.Wrap(err, "select all user error")
@@ -94,7 +112,7 @@ func GetAllUser() ([]models.User, error) {
 
 	var u models.User
 	for rows.Next() {
-		if err := rows.Scan(&u.ID, &u.Username, &u.FirstName, &u.LastName, &u.Role); err != nil {
+		if err := rows.Scan(&u.ID, &u.Username, &u.FirstName, &u.LastName, &u.Role, &u.Token); err != nil {
 			err = errors.Wrap(err, "scan users row error")
 			log.Printf("%+v\n", err)
 			return users, err

@@ -35,6 +35,9 @@ func main() {
 
 	router.HandleFunc("/api/ping", handler.Ping).Methods("GET")
 
+	// auth
+	router.HandleFunc("/api/auth/check", handler.CheckAuth).Methods("POST")
+
 	// users
 	router.HandleFunc("/api/login", handler.Login).Methods("POST")
 	router.HandleFunc("/api/users", handler.GetAllUsers).Methods("GET")

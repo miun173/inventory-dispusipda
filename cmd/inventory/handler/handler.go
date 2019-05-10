@@ -1,18 +1,72 @@
 package handler
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/gorilla/mux"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/repo"
 )
 
-// var people []models.Person
+func decodeAuthToken(authToken string) (int, string, error) {
+	s := strings.SplitN(authToken, " ", 2)
+	if len(s) != 2 {
+		return 0, "", errors.New("authToken not valid")
+	}
+
+	b, err := base64.StdEncoding.DecodeString(s[1])
+	if err != nil {
+		return 0, "", errors.WithStack(err)
+	}
+
+	pair := strings.SplitN(string(b), ":", 2)
+	if len(pair) != 2 {
+		return 0, "", errors.New("authToken not valid")
+	}
+
+	id, err := strconv.Atoi(pair[0])
+	if err != nil {
+		return 0, "", errors.WithStack(err)
+	}
+
+	return id, pair[1], nil
+}
+
+// CheckAuth validate user auth
+func CheckAuth(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	_ = json.NewDecoder(r.Body).Decode(&user)
+
+	authToken := r.Header.Get("Authorization")
+	id, token, err := decodeAuthToken(authToken)
+	if err != nil {
+		log.Printf("%+v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	var userRepo models.User
+	err = repo.GetUserByID(&userRepo, id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if token != userRepo.Token || user.Role != userRepo.Role {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+}
 
 // Ping check if service ready
 func Ping(w http.ResponseWriter, r *http.Request) {
