@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -235,10 +236,18 @@ func GetJurnal(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, b := range brgs {
-		penyusutan := (b.Harga - b.NilaiSisa) / float64(b.UmurEkonomis)
+		b.BebanPenyusutan = (b.Harga - b.NilaiSisa) / float64(b.UmurEkonomis)
+
+		tahunMasuk := time.Unix(int64(b.TglMasuk/1000), 0).Year()
+		tahunBerjalan := time.Now().Year() - tahunMasuk
+
+		penyusutanPerTahun := float64(tahunBerjalan) * b.BebanPenyusutan
+		b.NilaiBuku = b.Harga - penyusutanPerTahun
+		b.UmurPenggunaan = tahunBerjalan
+
 		j := models.Jurnal{
 			Barang:     b,
-			Penyusutan: penyusutan,
+			Penyusutan: penyusutanPerTahun,
 		}
 		jurnals = append(jurnals, j)
 	}
