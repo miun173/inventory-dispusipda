@@ -51,6 +51,22 @@ type BarangKeluar struct {
 	TglKeluar int    `json:"tglKeluar"`
 }
 
+// Rkbmd model
+type Rkbmd struct {
+	ID      int    `json:"id"`
+	TglBuat int    `json:"tglBuat"`
+	Status  string `json:"status"`
+}
+
+// DetailRkbmd model
+type DetailRkbmd struct {
+	ID         int    `json:"id"`
+	RkbmdID    int    `json:"rkbmdID"`
+	Jml        int    `json:"jml"`
+	NamaBarang string `json:"namaBarang"`
+	Status     string `json:"status"`
+}
+
 // Jurnal model
 type Jurnal struct {
 	Barang

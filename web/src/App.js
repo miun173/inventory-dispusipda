@@ -14,6 +14,7 @@ import {
   BarangKeluar,
   BukuInventaris,
   Login,
+  DivisiRkbmd,
 } from './containers'
 import {
   RoutePetugasBarang, RouteDivisi,
@@ -86,10 +87,17 @@ const LeftNavComp = ({ role }) => <>
     </> }
 
     { role === 'divisi' && <>
-      <Link to='/barang-keluar' style={{ color: '#fff' }}>
+      <Link to='/divisi/barang-keluar' style={{ color: '#fff' }}>
         <LeftMenu>
         <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
         Barang Keluar
+        </LeftMenu>
+      </Link>
+      <br />
+      <Link to='/divisi/rkbmd' style={{ color: '#fff' }}>
+        <LeftMenu>
+        <Icon type='create' style={{ color: '#fff', marginRight: '8px' }} />
+        Buat RKBMD
         </LeftMenu>
       </Link>
       <br />
@@ -229,12 +237,14 @@ class App extends Component {
               <Switch>
                 <RoutePetugasBarang path='/inventaris/buku' component={BukuInventaris} />
                 <RoutePetugasBarang path='/inventaris/barang-masuk' component={BarangMasuk} />
-                <RouteDivisi path='/barang-keluar' component={BarangKeluar} />
+                <RouteDivisi path='/divisi/barang-keluar' component={BarangKeluar} />
+                <RouteDivisi path='/divisi/rkbmd' component={DivisiRkbmd} />
+
                 <Route path='/login' component={Login} />
                 <Route path='/logout' component={() => {
                   return this.logout();
                 }} />
-                <Route path='/' component={() => <main>
+                <Route path='/' component={() => <main style={{ margin: 'auto' }}>
                   <h1>Home</h1>
                   { !userInfo.auth && <Button><Link to='/login'>Login</Link></Button> }
                 </main>} />

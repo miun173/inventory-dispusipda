@@ -264,3 +264,38 @@ func GetJurnal(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jData)
 }
+
+// CreateRkbmd handler
+func CreateRkbmd(w http.ResponseWriter, r *http.Request) {
+	// create Rkbmd
+	now := time.Now().Unix() * 1000
+	rkbmd := models.Rkbmd{
+		TglBuat: int(now),
+	}
+	err := repo.CreateRkbmd(&rkbmd)
+	if err != nil {
+		log.Printf("%+v\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+	}
+
+	// Create Rkbmd detail
+	var dRkbmd []models.DetailRkbmd
+	mapData := map[string][]models.DetailRkbmd{"rkbmd": dRkbmd}
+	err = json.NewDecoder(r.Body).Decode(&mapData)
+	if err != nil {
+		log.Printf("%+v\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+	}
+
+	err = repo.CreateDetailRkbmd(mapData["rkbmd"], rkbmd.ID)
+	if err != nil {
+		log.Printf("%+v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]int{"rkbmdID": rkbmd.ID})
+}

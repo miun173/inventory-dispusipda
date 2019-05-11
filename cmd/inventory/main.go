@@ -53,6 +53,9 @@ func main() {
 	// jurnal
 	router.HandleFunc("/api/jurnal", handler.GetJurnal).Methods("GET")
 
+	// rkbmd
+	router.HandleFunc("/api/rkbmd", handler.CreateRkbmd).Methods("POST")
+
 	// frontend
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))
 

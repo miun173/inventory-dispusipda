@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/base64"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 	// sqlite driver
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
+	"github.com/miun173/inventory-dispusibda/cmd/inventory/models/rkbmd"
 )
 
 var db *sql.DB
@@ -27,7 +29,7 @@ func InitDB() {
 
 	stmts := []string{
 		"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT, role TEXT, token TEXT);",
-		"CREATE TABLE IF NOT EXISTS rkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, tglBuat NUMERIC);",
+		"CREATE TABLE IF NOT EXISTS rkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, tglBuat NUMERIC, status TEXT);",
 		"CREATE TABLE IF NOT EXISTS detailRkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, rkbmdID INTEGER, namaBarang TEXT, jml NUMERIC, status TEXT, FOREIGN KEY (rkbmdID) REFERENCES rkbmd(id))",
 		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, jml INTEGER, ket TEXT, harga REAL, nilaiSisa REAL, umurEkonomis INTEGER, umurPenggunaan INTEGER, nilaiBuku REAL, bebanPenyusutan REAL, koreksi REAL);",
 		"CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, barangID INTEGER, jml INTEGER, tglKeluar NUMERIC, FOREIGN KEY (barangID) REFERENCES barang(id));",
@@ -270,4 +272,63 @@ func GetAllBarangKeluar() ([]models.BarangKeluar, error) {
 	}
 
 	return brgs, nil
+}
+
+// CreateRkbmd repo
+func CreateRkbmd(rkbdm *models.Rkbmd) error {
+	q := "INSERT INTO rkbmd (tglBuat, status) VALUES(?, ?)"
+	stm, err := db.Prepare(q)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	res, err := stm.Exec(rkbdm.TglBuat, rkbmd.RkbmdPending)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	rkbdm.ID = int(id)
+	return nil
+}
+
+// CreateDetailRkbmd repo
+func CreateDetailRkbmd(dRkbmd []models.DetailRkbmd, rkbmdID int) error {
+	var q bytes.Buffer
+	q.WriteString("INSERT INTO detailRkbmd (rkbmdID, jml, namaBarang, status) VALUES")
+	for i, d := range dRkbmd {
+		var s string
+		// if it's last element
+		if i == len(dRkbmd)-1 {
+			s = fmt.Sprintf("(%d, %d, '%s', '%s');", rkbmdID, d.Jml, d.NamaBarang, rkbmd.RkbmdPending)
+		} else {
+			s = fmt.Sprintf("(%d, %d, '%s', '%s'),", rkbmdID, d.Jml, d.NamaBarang, rkbmd.RkbmdPending)
+		}
+		q.WriteString(s)
+	}
+
+	log.Println(q.String())
+	rows, err := db.Query(q.String())
+	log.Printf("data ? %v", rows.Next())
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	defer rows.Close()
+
+	var ds []models.DetailRkbmd
+	var d models.DetailRkbmd
+	for rows.Next() {
+		if err := rows.Scan(&d.ID); err != nil {
+			return errors.WithStack(err)
+		}
+
+		log.Println(d)
+		ds = append(ds, d)
+	}
+
+	return nil
 }
