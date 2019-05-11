@@ -60,11 +60,17 @@ type Rkbmd struct {
 
 // DetailRkbmd model
 type DetailRkbmd struct {
-	ID         int    `json:"id"`
-	RkbmdID    int    `json:"rkbmdID"`
-	Jml        int    `json:"jml"`
-	NamaBarang string `json:"namaBarang"`
-	Status     string `json:"status"`
+	ID         int    `json:"id,omitempty"`
+	RkbmdID    int    `json:"rkbmdID,omitempty"`
+	Jml        int    `json:"jml,omitempty"`
+	NamaBarang string `json:"namaBarang,omitempty"`
+	Status     string `json:"status,omitempty"`
+}
+
+// RkbmdDetail model
+type RkbmdDetail struct {
+	Rkbmd
+	Detail []DetailRkbmd `json:"details"`
 }
 
 // Jurnal model

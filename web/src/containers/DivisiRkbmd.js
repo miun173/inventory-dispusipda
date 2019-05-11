@@ -36,6 +36,7 @@ export class DivisiRkbmd extends React.Component {
 
   componentDidMount() {
     this._isMounted = true
+    this.getRkbmd()
   }
 
   handleBarangInput = (event) => {
@@ -72,6 +73,8 @@ export class DivisiRkbmd extends React.Component {
       }
     });
 
+    this.getRkbmd()
+
     this.setState({
       newRkbmd: []
     })
@@ -88,7 +91,7 @@ export class DivisiRkbmd extends React.Component {
   }
 
   render() {
-    const tableCols = [{
+    const tableBarang = [{
       title: 'Nama',
       dataIndex: 'namaBarang',
       key: 'nama',
@@ -105,8 +108,23 @@ export class DivisiRkbmd extends React.Component {
       dataIndex: 'satuan',
       key: 'satuan',
     },]
+    
+    const tableRkbmd = [{
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id'
+    }, {
+      title: 'Tgl Diajukan',
+      dataIndex: 'tglBuat',
+      key: 'tglBuat',
+      render: d => (new Date(d)).toLocaleDateString(),
+    }, {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status'
+    }]
 
-    const { newBarang, newRkbmd } = this.state
+    const { newBarang, newRkbmd, rkbmds } = this.state
     return <Container>
       <h2>Tambah Barang</h2>
       <form>
@@ -123,8 +141,12 @@ export class DivisiRkbmd extends React.Component {
       <br />
 
       <h2>Daftar Barang Yang Diajukan</h2>
-      <Table columns={tableCols} dataSource={newRkbmd} />
+      <Table columns={tableBarang} dataSource={newRkbmd} />
       <Button style={{ width: '100%' }} onClick={this.createRkbmd} type='primary'>Buat RKBMD</Button>
+
+      <h2>Daftar RKBMD</h2>
+      <Table columns={tableRkbmd} dataSource={rkbmds} />
+
     </Container>
   }
 }

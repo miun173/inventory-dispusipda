@@ -332,3 +332,47 @@ func CreateDetailRkbmd(dRkbmd []models.DetailRkbmd, rkbmdID int) error {
 
 	return nil
 }
+
+// GetAllRkbmd repo
+func GetAllRkbmd() ([]models.RkbmdDetail, error) {
+	rkbmds := make([]models.RkbmdDetail, 0)
+	q := "SELECT id, tglBuat, status FROM rkbmd"
+	rows, err := db.Query(q)
+	if err != nil {
+		return rkbmds, errors.WithStack(err)
+	}
+	defer rows.Close()
+
+	var r models.RkbmdDetail
+	for rows.Next() {
+		var status sql.NullString
+		if err := rows.Scan(&r.ID, &r.TglBuat, &status); err != nil {
+			return rkbmds, errors.WithStack(err)
+		}
+
+		if status.Valid {
+			r.Status = status.String
+		}
+
+		q = "SELECT id, rkbmdID, jml, namaBarang, status FROM detailRkbmd WHERE rkbmdID = ?"
+		rows2, err := db.Query(q, r.ID)
+		if err != nil {
+			return rkbmds, errors.WithStack(err)
+		}
+
+		var d models.DetailRkbmd
+		r.Detail = make([]models.DetailRkbmd, 0)
+		for rows2.Next() {
+			if err = rows2.Scan(&d.ID, &d.RkbmdID, &d.Jml, &d.NamaBarang, &d.Status); err != nil {
+				return rkbmds, errors.WithStack(err)
+			}
+
+			r.Detail = append(r.Detail, d)
+		}
+		rows2.Close()
+
+		rkbmds = append(rkbmds, r)
+	}
+
+	return rkbmds, nil
+}

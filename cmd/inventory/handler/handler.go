@@ -287,6 +287,7 @@ func CreateRkbmd(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%+v\n", err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+		return
 	}
 
 	err = repo.CreateDetailRkbmd(mapData["rkbmd"], rkbmd.ID)
@@ -294,8 +295,23 @@ func CreateRkbmd(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%+v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]int{"rkbmdID": rkbmd.ID})
+}
+
+// GetAllRkbmd handler
+func GetAllRkbmd(w http.ResponseWriter, r *http.Request) {
+	rkbmds, err := repo.GetAllRkbmd()
+	if err != nil {
+		log.Printf("%+v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(rkbmds)
 }

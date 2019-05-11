@@ -55,6 +55,7 @@ func main() {
 
 	// rkbmd
 	router.HandleFunc("/api/rkbmd", handler.CreateRkbmd).Methods("POST")
+	router.HandleFunc("/api/rkbmd", handler.GetAllRkbmd).Methods("GET")
 
 	// frontend
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))
