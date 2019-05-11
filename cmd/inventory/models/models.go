@@ -38,7 +38,7 @@ type Barang struct {
 	UmurPenggunaan  int     `json:"umurPenggunaan"`
 	NilaiBuku       float64 `json:"nilaiBuku"`
 	BebanPenyusutan float64 `json:"bebanPenyusutan"`
-	Koreksi         float64 `json:"koreksi"`
+	Koreksi         float64 `json:"koreksi,omitempty"`
 	Ket             string  `json:"ket"`
 }
 

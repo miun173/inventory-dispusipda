@@ -1,7 +1,10 @@
 import React from 'react';
 import axios from 'axios';
+import XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import {
-  Table
+  Table,
+  Icon,
 } from 'antd';
 
 export class BukuInventaris extends React.Component {
@@ -19,6 +22,36 @@ export class BukuInventaris extends React.Component {
     });
 
     this.setState({ jurnal: data });
+  }
+
+  s2ab = (s) => { 
+    const buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+    const view = new Uint8Array(buf);  //create uint8array as viewer
+    for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+    return buf;    
+}
+
+  getExcel = () => {
+    const { jurnal } = this.state;
+    const data = [];
+    const keys = Object.keys(jurnal[0])
+    data[0] = ['Id',	'Kode',	'Nama',	'Reg',	'Merk',	'Jml',	'Ukuran',	'Bahan',	'Tipe Nomor',	'Nomor',	'Cara Perolehan',	'Perolehan',	'Harga',	'Nilai Sisa',	'Umur Ekonomis',	'Umur Penggunaan',	'Nilai Buku',	'Beban Penyusutan',	'Ket',	'Penyusutan']
+    for (let i = 0; i < jurnal.length; i++) {
+      const j = jurnal[i]
+      let d = []
+      for (let k = 0; k < keys.length; k++) {
+        console.log(keys[k])
+        d.push(j[keys[k]])
+      }
+      const jdate = (new Date(j.tglMasuk)).toLocaleDateString();
+      d['tglMasuk'] = jdate
+      data.push(d)
+    }
+    const wb = XLSX.utils.book_new()
+    wb.SheetNames.push("Buku Inventaris") 
+    wb.Sheets['Buku Inventaris'] = XLSX.utils.aoa_to_sheet(data)
+    const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+    saveAs(new Blob([this.s2ab(wbout)],{type:"application/octet-stream"}), 'test.xlsx');
   }
 
   render() {
@@ -111,7 +144,7 @@ export class BukuInventaris extends React.Component {
     },]
 
     return <div style={{ width: '900px', padding: '16px' }}>
-      <h2>Jurnal</h2>
+      <h2>Buku Inventaris <a onClick={this.getExcel}><Icon type='download' /></a></h2>
       <Table scroll={{ x: 900 }} columns={cols} dataSource={jurnal} />
     </div>
   }

@@ -65,6 +65,13 @@ export const LeftNavComp = ({ role }) => <>
   </> }
 
   { role === 'divisi' && <>
+    <Link to='/divisi/inventaris/buku' style={{ color: '#fff' }}>
+      <LeftMenu>
+      <Icon type='book' style={{ color: '#fff', marginRight: '8px' }} />
+      Buku Inventaris
+      </LeftMenu>
+    </Link>
+    <br />
     <Link to='/divisi/barang-keluar' style={{ color: '#fff' }}>
       <LeftMenu>
       <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />

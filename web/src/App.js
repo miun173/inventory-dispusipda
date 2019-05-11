@@ -145,6 +145,7 @@ class App extends Component {
               <Switch>
                 <RoutePetugasBarang path='/inventaris/buku' component={BukuInventaris} />
                 <RoutePetugasBarang path='/inventaris/barang-masuk' component={BarangMasuk} />
+                <RouteDivisi path='/divisi/inventaris/buku' component={BukuInventaris} />
                 <RouteDivisi path='/divisi/barang-keluar' component={BarangKeluar} />
                 <RouteDivisi path='/divisi/rkbmd' component={DivisiRkbmd} />
                 <RoutePejabat path='/acc/rkbmd' component={AccRkbmd} />
