@@ -45,7 +45,51 @@ func InitDB() {
 		statement.Close()
 	}
 
+	initUser()
+
 	log.Println("connect to db")
+}
+
+func initUser() {
+	users := [3][2]string{{"divisi", "divisi"}, {"subagumum", "pejabat"}, {"petugasBarang", "petugasBarang"}}
+	for _, u := range users {
+		user := models.User{
+			Username:  u[0],
+			FirstName: u[0],
+			LastName:  u[0],
+			Role:      u[1],
+			Password:  "123",
+		}
+
+		exists, err := CheckUsernameExist(user)
+		if err != nil {
+			log.Fatalf("%+v\n", err)
+			return
+		}
+
+		if !exists {
+			err = CreateUser(&user)
+			if err != nil {
+				log.Fatalf("%+v\n", err)
+				return
+			}
+		}
+	}
+}
+
+// CheckUsernameExist repo
+func CheckUsernameExist(user models.User) (bool, error) {
+	var exists bool
+	q := fmt.Sprintf("SELECT COUNT(1) FROM users WHERE username = '%s'", user.Username)
+	err := db.QueryRow(q).Scan(&exists)
+	if err != nil {
+		err = errors.WithStack(err)
+		return false, err
+	}
+
+	log.Printf("exists, %v", exists)
+
+	return exists, nil
 }
 
 // CreateUser insert new user to db
