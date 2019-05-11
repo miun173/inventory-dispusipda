@@ -9,120 +9,28 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
+
 import {
   BarangMasuk,
   BarangKeluar,
   BukuInventaris,
   Login,
   DivisiRkbmd,
+  AccRkbmd,
 } from './containers'
+
 import {
-  RoutePetugasBarang, RouteDivisi,
+  RoutePetugasBarang, RouteDivisi, RoutePejabat,
 } from './routes';
+
 import { Provider } from './store';
+
+import { LeftNavComp } from './components';
 
 const Container = styled.div`
   display: flex;
   min-height: 100vh;
 `
-
-const LeftNav = styled.div`
-  width: 256px;
-  background: #222;
-`
-
-const LeftMenu = styled.div`
-  margin-left: 16px;
-  padding: 8px;
-  a {
-    color: #fff;
-  }
-
-  &:hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
-`
-
-const Title = styled.div`
-  height: 100px;
-  width: 100%;
-  background: #1890FF;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  a {
-    h3 {
-      color: #fff;
-      font-weight: bold;
-    }
-  }
-`
-
-const LeftNavComp = ({ role }) => <>
-  <LeftNav>
-    <Title>
-      <Link to='/'>
-        <h3>Inventory Barang</h3>
-      </Link>
-    </Title>
-    <br />
-    { role === 'petugasBarang' && <>
-      <Link to='/inventaris/buku' style={{ color: '#fff' }}>
-        <LeftMenu>
-          <Icon type='book' style={{ color: '#fff', marginRight: '8px' }} />
-          Buku Inventaris
-        </LeftMenu>
-      </Link>
-      <br />
-
-      <Link to='/inventaris/barang-masuk' style={{ color: '#fff' }}>
-        <LeftMenu>
-          <Icon type='file-search' style={{ color: '#fff', marginRight: '8px' }} />
-          Barang Masuk
-        </LeftMenu>
-      </Link>
-      <br />
-    </> }
-
-    { role === 'divisi' && <>
-      <Link to='/divisi/barang-keluar' style={{ color: '#fff' }}>
-        <LeftMenu>
-        <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
-        Barang Keluar
-        </LeftMenu>
-      </Link>
-      <br />
-      <Link to='/divisi/rkbmd' style={{ color: '#fff' }}>
-        <LeftMenu>
-        <Icon type='create' style={{ color: '#fff', marginRight: '8px' }} />
-        Buat RKBMD
-        </LeftMenu>
-      </Link>
-      <br />
-    </> }
-
-    { role === 'pejabat' && <>
-      <Link to='/acc/rkbmd' style={{ color: '#fff' }}>
-        <LeftMenu>
-          <Icon type='file-protect' style={{ color: '#fff', marginRight: '8px' }} />
-          RKBMD
-        </LeftMenu>
-      </Link>
-      <br />
-    </> }
-
-    <Link to='/logout' style={{ color: '#fff' }}>
-      <LeftMenu>
-          <Icon type="logout" style={{ color: '#fff', marginRight: '8px' }} />
-          Logout
-      </LeftMenu>
-    </Link>
-    <br />
-
-  </LeftNav>
-</>
 
 const initState = {
   userInfo: {
@@ -239,6 +147,7 @@ class App extends Component {
                 <RoutePetugasBarang path='/inventaris/barang-masuk' component={BarangMasuk} />
                 <RouteDivisi path='/divisi/barang-keluar' component={BarangKeluar} />
                 <RouteDivisi path='/divisi/rkbmd' component={DivisiRkbmd} />
+                <RoutePejabat path='/acc/rkbmd' component={AccRkbmd} />
 
                 <Route path='/login' component={Login} />
                 <Route path='/logout' component={() => {

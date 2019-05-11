@@ -110,9 +110,9 @@ export class BukuInventaris extends React.Component {
       render: (d) => d ? d.toLocaleString('id-ID') : 0
     },]
 
-    return <div style={{ maxWidth: '1100px', width: '100%', padding: '16px' }}>
+    return <div style={{ width: '900px', padding: '16px' }}>
       <h2>Jurnal</h2>
-      <Table style={{ width: '100%' }} scroll={{ x: 1100 }} columns={cols} dataSource={jurnal} />
+      <Table scroll={{ x: 900 }} columns={cols} dataSource={jurnal} />
     </div>
   }
 }

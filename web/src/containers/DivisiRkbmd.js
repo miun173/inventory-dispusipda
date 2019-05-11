@@ -14,6 +14,9 @@ const SidedCard = styled.div`
 
 const Container = styled.div`
   padding: 8px;
+  display: flex;
+  /* width: 100%; */
+  box-sizing: border-box;
 `
 
 const initState = {
@@ -126,27 +129,30 @@ export class DivisiRkbmd extends React.Component {
 
     const { newBarang, newRkbmd, rkbmds } = this.state
     return <Container>
-      <h2>Tambah Barang</h2>
-      <form>
-        <SidedCard>
-          <InputCard value={newBarang.namaBarang} label='Nama Barang' name='namaBarang' onChange={this.handleBarangInput}/>
-          <InputCard width={100} value={newBarang.jml} type='number' label='Jml' name='jml' onChange={this.handleBarangInput}/>
-        </SidedCard>
-        <SidedCard>
-          <InputCard value={newBarang.satuan} label='Satuan' name='satuan' onChange={this.handleBarangInput}/>
-          <InputCard width={100} value={newBarang.kodeBarang} label='Kode Barang' name='kodeBarang' onChange={this.handleBarangInput}/>
-        </SidedCard>
-        <Button htmlType='submit' onClick={this.handleTambah} style={{ width: '100%' }} type='primary'>Tambah</Button>
-      </form>
-      <br />
+      <div>
+        <h2>Tambah Barang</h2>
+        <form>
+          <SidedCard>
+            <InputCard value={newBarang.namaBarang} label='Nama Barang' name='namaBarang' onChange={this.handleBarangInput}/>
+            <InputCard width={100} value={newBarang.jml} type='number' label='Jml' name='jml' onChange={this.handleBarangInput}/>
+          </SidedCard>
+          <SidedCard>
+            <InputCard value={newBarang.satuan} label='Satuan' name='satuan' onChange={this.handleBarangInput}/>
+            <InputCard width={100} value={newBarang.kodeBarang} label='Kode Barang' name='kodeBarang' onChange={this.handleBarangInput}/>
+          </SidedCard>
+          <Button htmlType='submit' onClick={this.handleTambah} style={{ width: '100%' }} type='primary'>Tambah</Button>
+        </form>
+        <br />
 
-      <h2>Daftar Barang Yang Diajukan</h2>
-      <Table columns={tableBarang} dataSource={newRkbmd} />
-      <Button style={{ width: '100%' }} onClick={this.createRkbmd} type='primary'>Buat RKBMD</Button>
+        <h2>Daftar Barang Yang Diajukan</h2>
+        <Table columns={tableBarang} dataSource={newRkbmd} />
+        <Button style={{ width: '100%' }} onClick={this.createRkbmd} type='primary'>Buat RKBMD</Button>
+      </div>
 
-      <h2>Daftar RKBMD</h2>
-      <Table columns={tableRkbmd} dataSource={rkbmds} />
-
+      <div style={{ marginLeft: '64px' }}>
+        <h2>Daftar RKBMD</h2>
+        <Table columns={tableRkbmd} dataSource={rkbmds} />
+      </div>
     </Container>
   }
 }

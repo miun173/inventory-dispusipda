@@ -3,3 +3,4 @@ export * from './BukuInventaris';
 export * from './BarangKeluar';
 export * from './Login';
 export * from './DivisiRkbmd';
+export * from './AccRkbmd';

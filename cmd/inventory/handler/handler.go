@@ -312,6 +312,25 @@ func GetAllRkbmd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(rkbmds)
+}
+
+// UpdateRkbmd handler
+func UpdateRkbmd(w http.ResponseWriter, r *http.Request) {
+	var rkbmd models.RkbmdDetail
+	err := json.NewDecoder(r.Body).Decode(&rkbmd)
+	if err != nil {
+		log.Printf("%+v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+		return
+	}
+
+	// update rkbmd detail
+	repo.UpdateRkbmdDetail(rkbmd)
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "updated"})
 }

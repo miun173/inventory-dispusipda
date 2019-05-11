@@ -92,12 +92,6 @@ export class BarangMasuk extends React.Component {
     e.preventDefault();
     const { newBarang } = this.state;
 
-    // const keys = Object.keys(newBarang);
-    // if (!keys.every(k => newBarang[k])) {
-    //   this.openNotificationWithIcon('error', 'Field cannot be empty or 0');
-    //   return;
-    // }
-
     try {
       const { data } = await axios('/api/barang', {
         method: 'POST',
@@ -249,7 +243,7 @@ export class BarangMasuk extends React.Component {
           </Button>
         </form>
       </div>
-      <div style={{ width: '450px', marginLeft: '16px' }}>
+      <div style={{ width: '400px', marginLeft: '16px' }}>
         <h2>Daftar Barang Masuk</h2>
         <Table columns={cols} dataSource={barangs} />
       </div>

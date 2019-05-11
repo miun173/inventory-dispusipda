@@ -63,6 +63,7 @@ type DetailRkbmd struct {
 	ID         int    `json:"id,omitempty"`
 	RkbmdID    int    `json:"rkbmdID,omitempty"`
 	Jml        int    `json:"jml,omitempty"`
+	KodeBarang string `json:"kodeBarang,omitempty"`
 	NamaBarang string `json:"namaBarang,omitempty"`
 	Status     string `json:"status,omitempty"`
 }
