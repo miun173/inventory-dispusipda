@@ -123,9 +123,13 @@ export class BarangKeluar extends React.Component {
             <label>Nama</label>
             <Input type='text' value={newBarangKel.nama} name='nama' onChange={this.handleBarangInput}/>
         </Card>
-        <Card>
-            <label>Jumlah</label>
-            <Input type='number' value={newBarangKel.jml} name='jml' onChange={this.handleBarangInput}/>
+        <Card style={{ width: '100px' }}>
+            <label>Jumlah</label> <br />
+            <Input  type='number' value={newBarangKel.jml} name='jml' onChange={this.handleBarangInput}/>
+        </Card>
+        <Card style={{ width: '180px' }}>
+            <label>Tgl Keluar</label> <br />
+            <Input type='date' value={newBarangKel.tglKeluar} name='tglKeluar' onChange={this.handleBarangInput}/>
         </Card>
 
         <Card>
