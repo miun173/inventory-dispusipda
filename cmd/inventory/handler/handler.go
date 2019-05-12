@@ -329,7 +329,13 @@ func UpdateRkbmd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// update rkbmd detail
-	repo.UpdateRkbmdDetail(rkbmd)
+	err = repo.UpdateRkbmdDetail(rkbmd)
+	if err != nil {
+		log.Printf("%+v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "something bad"})
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "updated"})

@@ -87,8 +87,6 @@ func CheckUsernameExist(user models.User) (bool, error) {
 		return false, err
 	}
 
-	log.Printf("exists, %v", exists)
-
 	return exists, nil
 }
 
