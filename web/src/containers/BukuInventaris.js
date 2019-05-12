@@ -29,7 +29,7 @@ export class BukuInventaris extends React.Component {
     const view = new Uint8Array(buf);  //create uint8array as viewer
     for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
     return buf;    
-}
+  }
 
   getExcel = () => {
     const { jurnal } = this.state;
