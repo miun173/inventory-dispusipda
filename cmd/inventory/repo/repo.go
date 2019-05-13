@@ -178,6 +178,8 @@ func CreateBarang(brg *models.Barang) error {
 	}
 	defer stm.Close()
 
+	brg.TglMasuk = int(time.Now().Unix() * 1000)
+
 	res, err := stm.Exec(brg.Kode, brg.Nama, brg.Reg, brg.Merk, brg.Jml, brg.Ket, brg.Ukuran, brg.Bahan, brg.TglMasuk, brg.TipeSpek, brg.NomorSpek, brg.CaraPerolehan, brg.Harga, brg.NilaiSisa, brg.UmurEkonomis, brg.UmurPenggunaan, brg.NilaiBuku, brg.BebanPenyusutan, brg.Koreksi)
 	if err != nil {
 		err = errors.Wrap(err, "insert barang error")

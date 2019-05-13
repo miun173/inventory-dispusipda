@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon, Button } from 'antd';
+import { Icon, Button, notification } from 'antd';
 import axios from 'axios';
 import styled from 'styled-components';
 import {
@@ -111,10 +111,20 @@ class App extends Component {
       }, () => {
         cb(data.role)
       });
+
+      this.openNotificationWithIcon('success', 'Success Login');
     } catch (e) {
       console.error(e);
+      this.openNotificationWithIcon('error', 'Failed Login');
     }
   }
+
+  openNotificationWithIcon = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+    });
+  };
 
   logout = () => {
     this.setState({
@@ -145,8 +155,9 @@ class App extends Component {
               <Switch>
                 <RoutePetugasBarang path='/inventaris/buku' component={BukuInventaris} />
                 <RoutePetugasBarang path='/inventaris/barang-masuk' component={BarangMasuk} />
+                {/* <RoutePetugasBarang path='/inventaris/barang-keluar' component={BarangKeluar} /> */}
                 <RouteDivisi path='/divisi/inventaris/buku' component={BukuInventaris} />
-                <RouteDivisi path='/divisi/barang-keluar' component={BarangKeluar} />
+                {/* <RouteDivisi path='/divisi/barang-keluar' component={BarangKeluar} /> */}
                 <RouteDivisi path='/divisi/rkbmd' component={DivisiRkbmd} />
                 <RoutePejabat path='/acc/rkbmd' component={AccRkbmd} />
 

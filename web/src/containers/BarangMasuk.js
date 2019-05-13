@@ -29,7 +29,7 @@ const initNewBarang = {
   merk: '',
   ukuran: '',
   bahan: '',
-  tglMasuk: null,
+  tglMasuk: (new Date()).getTime(),
   tipeSpek: tipe[0],
   nomorSpek: '',
   caraPerolehan: '',
