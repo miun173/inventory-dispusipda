@@ -38,11 +38,18 @@ export const Title = styled.div`
   }
 `
 
+const user = {
+  pejabat: 'Subag Umum',
+  petugasBarang: 'Petugas Barang',
+  divisi: 'Divisi',
+}
+
 export const LeftNavComp = ({ role }) => <>
 <LeftNav>
   <Title>
-    <Link to='/'>
+    <Link style={{ textAlign: 'center' }} to='/'>
       <h3>Inventory Barang</h3>
+      <h4 style={{ color: '#fff' }}>{ user[role] }</h4>
     </Link>
   </Title>
   <br />
@@ -54,6 +61,14 @@ export const LeftNavComp = ({ role }) => <>
       </LeftMenu>
     </Link>
     <br />
+
+    {/* <Link to='/inventaris/barang-keluar' style={{ color: '#fff' }}>
+      <LeftMenu>
+      <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
+      Barang Keluar
+      </LeftMenu>
+    </Link>
+    <br /> */}
 
     <Link to='/inventaris/barang-masuk' style={{ color: '#fff' }}>
       <LeftMenu>
@@ -72,13 +87,13 @@ export const LeftNavComp = ({ role }) => <>
       </LeftMenu>
     </Link>
     <br />
-    <Link to='/divisi/barang-keluar' style={{ color: '#fff' }}>
+    {/* <Link to='/divisi/barang-keluar' style={{ color: '#fff' }}>
       <LeftMenu>
       <Icon type='export' style={{ color: '#fff', marginRight: '8px' }} />
       Barang Keluar
       </LeftMenu>
     </Link>
-    <br />
+    <br /> */}
     <Link to='/divisi/rkbmd' style={{ color: '#fff' }}>
       <LeftMenu>
       <Icon type='create' style={{ color: '#fff', marginRight: '8px' }} />

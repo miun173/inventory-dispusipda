@@ -70,7 +70,7 @@ class LoginComp extends React.Component {
       ? <Redirect to={defPage[this.context.user.role]} /> 
       : (<div style={{ marginTop: '32px', width: '100%' }}>
         <LoginForm 
-              title='Login Store'
+              title='Login'
               username={username} 
               password={password} 
               handlePoInput={this.handlePoInput}
