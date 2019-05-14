@@ -17,6 +17,7 @@ import {
   Login,
   DivisiRkbmd,
   AccRkbmd,
+  Home,
 } from './containers'
 
 import {
@@ -92,6 +93,8 @@ class App extends Component {
             auth: false,
           },
         })
+
+      this.openNotificationWithIcon('error', 'Not Allowed, Please Login');
         console.error(error);
       });
   }
@@ -131,6 +134,8 @@ class App extends Component {
       ...initState
     });
 
+    localStorage.removeItem('userInfo')
+
     return <Redirect to='/' />
   }
 
@@ -165,10 +170,7 @@ class App extends Component {
                 <Route path='/logout' component={() => {
                   return this.logout();
                 }} />
-                <Route path='/' component={() => <main style={{ margin: 'auto' }}>
-                  <h1>Home</h1>
-                  { !userInfo.auth && <Button><Link to='/login'>Login</Link></Button> }
-                </main>} />
+                <Route path='/' component={() => <Home userInfo={userInfo} />}/>
               </Switch>
         </Container>
       </Router>
