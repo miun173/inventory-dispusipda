@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import {
   Table,
   Button,
+  notification,
 } from 'antd';
 
 import { InputCard } from '../components'
@@ -25,6 +26,7 @@ const initState = {
     kodeBarang: '',
     satuan: '',
     jml: 0,
+    harga: 0.0,
   },
   newRkbmd: [],
   rkbmds: []
@@ -69,19 +71,33 @@ export class DivisiRkbmd extends React.Component {
   }
 
   createRkbmd = async () => {
-    const { data } = await axios('/api/rkbmd', {
-      method: 'POST',
-      data: {
-        rkbmd: this.state.newRkbmd
-      }
-    });
+    try {
+      const { data } = await axios('/api/rkbmd', {
+        method: 'POST',
+        data: {
+          rkbmd: this.state.newRkbmd
+        }
+      });
+  
+      this.getRkbmd()
+  
+      this.setState({
+        newRkbmd: []
+      });
 
-    this.getRkbmd()
-
-    this.setState({
-      newRkbmd: []
-    })
+      this.openNotificationWithIcon('success', 'Success Create RKBMD')
+    } catch (e) {
+      console.error(e)
+      this.openNotificationWithIcon('error', 'Failed Create RKBMD')
+    }
   }
+
+  openNotificationWithIcon = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+    });
+  };
 
   getRkbmd = async () => {
     const { data } = await axios('/api/rkbmd', {
@@ -92,7 +108,6 @@ export class DivisiRkbmd extends React.Component {
       rkbmds: data
     })
   }
-
   render() {
     const tableBarang = [{
       title: 'Nama',
@@ -103,9 +118,21 @@ export class DivisiRkbmd extends React.Component {
       dataIndex: 'jml',
       key: 'jumlah',
     }, {
+      title: 'Harga',
+      dataIndex: 'harga',
+      key: 'harga',
+    }, {
+      title: 'Total Harga',
+      dataIndex: 'hargaTotal',
+      key: 'hargaTotal',
+      render: (d, rec) => {
+        const sum = rec.harga * rec.jml
+        return sum ? sum.toLocaleString('id-ID') : 0
+      }
+    }, {
       title: 'Kode',
-      dataIndex: 'kode',
-      key: 'kode',
+      dataIndex: 'kodeBarang',
+      key: 'kodeBarang',
     }, {
       title: 'Satuan',
       dataIndex: 'satuan',
@@ -140,6 +167,10 @@ export class DivisiRkbmd extends React.Component {
             <InputCard value={newBarang.satuan} label='Satuan' name='satuan' onChange={this.handleBarangInput}/>
             <InputCard width={100} value={newBarang.kodeBarang} label='Kode Barang' name='kodeBarang' onChange={this.handleBarangInput}/>
           </SidedCard>
+          <SidedCard>
+            <InputCard type='number' value={newBarang.harga} label='Harga' name='harga' onChange={this.handleBarangInput}/>
+          </SidedCard>
+
           <Button htmlType='submit' onClick={this.handleTambah} style={{ width: '100%' }} type='primary'>Tambah</Button>
         </form>
         <br />

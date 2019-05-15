@@ -142,7 +142,7 @@ export class AccRkbmd extends React.Component {
 
 
     // insert rkDetail to rows
-    data[3] = ['ID','Rkbmd ID','Jumlah','Kode Barang', 'Nama Barang', 'Status']
+    data[3] = ['ID','Rkbmd ID','Jumlah','Kode Barang', 'Nama Barang', 'Status', 'Harga', 'Total Harga']
     for (let i = 0; i < rkDetail.length; i++) {
       const j = rkDetail[i];
       let d = [];

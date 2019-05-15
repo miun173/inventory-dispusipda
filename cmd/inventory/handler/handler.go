@@ -244,6 +244,7 @@ func GetJurnal(w http.ResponseWriter, r *http.Request) {
 		penyusutanPerTahun := float64(tahunBerjalan) * b.BebanPenyusutan
 		b.NilaiBuku = b.Harga - penyusutanPerTahun
 		b.UmurPenggunaan = tahunBerjalan
+		b.HargaTotal = b.Harga * float64(b.Jml)
 
 		j := models.Jurnal{
 			Barang:     b,

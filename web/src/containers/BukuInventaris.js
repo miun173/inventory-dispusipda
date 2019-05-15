@@ -35,7 +35,7 @@ export class BukuInventaris extends React.Component {
     const { jurnal } = this.state;
     const data = [];
     const keys = Object.keys(jurnal[0])
-    data[0] = ['Id',	'Kode',	'Nama',	'Reg',	'Merk',	'Jml',	'Ukuran',	'Bahan',	'Tipe Nomor',	'Nomor',	'Cara Perolehan',	'Perolehan',	'Harga',	'Nilai Sisa',	'Umur Ekonomis',	'Umur Penggunaan',	'Nilai Buku',	'Beban Penyusutan',	'Ket',	'Penyusutan']
+    data[0] = ['Id',	'Kode',	'Nama',	'Reg',	'Merk',	'Jml',	'Ukuran',	'Bahan',	'Tipe Nomor',	'Nomor',	'Cara Perolehan',	'Perolehan',	'Harga',	'Nilai Sisa',	'Umur Ekonomis',	'Umur Penggunaan',	'Nilai Buku',	'Beban Penyusutan',	'Ket',	'Harga Total', 'Penyusutan']
     for (let i = 0; i < jurnal.length; i++) {
       const j = jurnal[i]
       let d = []
@@ -44,9 +44,12 @@ export class BukuInventaris extends React.Component {
         d.push(j[keys[k]])
       }
       const jdate = (new Date(j.tglMasuk)).toLocaleDateString();
-      d['tglMasuk'] = jdate
+      d[11] = jdate
       data.push(d)
     }
+
+    console.log(data);
+
     const wb = XLSX.utils.book_new()
     wb.SheetNames.push("Buku Inventaris") 
     wb.Sheets['Buku Inventaris'] = XLSX.utils.aoa_to_sheet(data)
@@ -82,6 +85,16 @@ export class BukuInventaris extends React.Component {
       dataIndex: 'jml',
       key: 'jml',
     }, {
+      title: 'Harga',
+      dataIndex: 'harga',
+      key: 'harga',
+      render: (d) => d ? d.toLocaleString('id-ID') : 0
+    }, {
+      title: 'Total Harga',
+      dataIndex: 'hargaTotal',
+      key: 'hargaTotal',
+      render: (d) => d ? d.toLocaleString('id-ID') : 0
+    }, {
       title: 'Ukuran',
       dataIndex: 'ukuran',
       key: 'ukuran',
@@ -108,11 +121,6 @@ export class BukuInventaris extends React.Component {
       title: 'Keterangan',
       dataIndex: 'ket',
       key: 'ket',
-    }, {
-      title: 'Harga',
-      dataIndex: 'harga',
-      key: 'harga',
-      render: (d) => d ? d.toLocaleString('id-ID') : 0
     }, {
       title: 'Nilai Sisa',
       dataIndex: 'nilaiSisa',

@@ -30,7 +30,7 @@ func InitDB() {
 	stmts := []string{
 		"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, firstname TEXT, lastname TEXT, password TEXT, role TEXT, token TEXT);",
 		"CREATE TABLE IF NOT EXISTS rkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, tglBuat NUMERIC, status TEXT);",
-		"CREATE TABLE IF NOT EXISTS detailRkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, rkbmdID INTEGER, namaBarang TEXT, kodeBarang TEXT, jml NUMERIC, status TEXT, FOREIGN KEY (rkbmdID) REFERENCES rkbmd(id))",
+		"CREATE TABLE IF NOT EXISTS detailRkbmd (id INTEGER PRIMARY KEY AUTOINCREMENT, rkbmdID INTEGER, namaBarang TEXT, kodeBarang TEXT, jml NUMERIC, status TEXT, harga REAL, FOREIGN KEY (rkbmdID) REFERENCES rkbmd(id))",
 		"CREATE TABLE IF NOT EXISTS barang (id INTEGER PRIMARY KEY AUTOINCREMENT, kode TEXT, nama TEXT, reg TEXT, merk TEXT, ukuran TEXT, bahan TEXT, tglMasuk NUMERIC, tipeSpek TEXT, nomorSpek TEXT, caraPerolehan TEXT, jml INTEGER, ket TEXT, harga REAL, nilaiSisa REAL, umurEkonomis INTEGER, umurPenggunaan INTEGER, nilaiBuku REAL, bebanPenyusutan REAL, koreksi REAL);",
 		"CREATE TABLE IF NOT EXISTS barangKeluar (id INTEGER PRIMARY KEY AUTOINCREMENT, barangID INTEGER, jml INTEGER, tglKeluar NUMERIC, FOREIGN KEY (barangID) REFERENCES barang(id));",
 	}
@@ -341,17 +341,19 @@ func CreateRkbmd(rkbdm *models.Rkbmd) error {
 // CreateDetailRkbmd repo
 func CreateDetailRkbmd(dRkbmd []models.DetailRkbmd, rkbmdID int) error {
 	var q bytes.Buffer
-	q.WriteString("INSERT INTO detailRkbmd (rkbmdID, jml, namaBarang, status, kodeBarang) VALUES")
+	q.WriteString("INSERT INTO detailRkbmd (rkbmdID, jml, namaBarang, status, kodeBarang, harga) VALUES")
 	for i, d := range dRkbmd {
 		var s string
 		// if it's last element
 		if i == len(dRkbmd)-1 {
-			s = fmt.Sprintf("(%d, %d, '%s', '%s', '%s');", rkbmdID, d.Jml, d.NamaBarang, rkbmd.RkbmdPending, d.KodeBarang)
+			s = fmt.Sprintf("(%d, %d, '%s', '%s', '%s', %f);", rkbmdID, d.Jml, d.NamaBarang, rkbmd.RkbmdPending, d.KodeBarang, d.Harga)
 		} else {
-			s = fmt.Sprintf("(%d, %d, '%s', '%s', '%s'),", rkbmdID, d.Jml, d.NamaBarang, rkbmd.RkbmdPending, d.KodeBarang)
+			s = fmt.Sprintf("(%d, %d, '%s', '%s', '%s', %f),", rkbmdID, d.Jml, d.NamaBarang, rkbmd.RkbmdPending, d.KodeBarang, d.Harga)
 		}
 		q.WriteString(s)
 	}
+
+	log.Println(q.String())
 
 	rows, err := db.Query(q.String())
 	if err != nil {
@@ -394,7 +396,7 @@ func GetAllRkbmd() ([]models.RkbmdDetail, error) {
 			r.Status = status.String
 		}
 
-		q = "SELECT id, rkbmdID, jml, namaBarang, status, kodeBarang FROM detailRkbmd WHERE rkbmdID = ?"
+		q = "SELECT id, rkbmdID, jml, namaBarang, status, kodeBarang, harga FROM detailRkbmd WHERE rkbmdID = ?"
 		rows2, err := db.Query(q, r.ID)
 		if err != nil {
 			return rkbmds, errors.WithStack(err)
@@ -403,10 +405,11 @@ func GetAllRkbmd() ([]models.RkbmdDetail, error) {
 		var d models.DetailRkbmd
 		r.Detail = make([]models.DetailRkbmd, 0)
 		for rows2.Next() {
-			if err = rows2.Scan(&d.ID, &d.RkbmdID, &d.Jml, &d.NamaBarang, &d.Status, &d.KodeBarang); err != nil {
+			if err = rows2.Scan(&d.ID, &d.RkbmdID, &d.Jml, &d.NamaBarang, &d.Status, &d.KodeBarang, &d.Harga); err != nil {
 				return rkbmds, errors.WithStack(err)
 			}
 
+			d.HargaTotal = d.Harga * float64(d.Jml)
 			r.Detail = append(r.Detail, d)
 		}
 		rows2.Close()

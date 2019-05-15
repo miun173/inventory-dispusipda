@@ -40,6 +40,7 @@ type Barang struct {
 	BebanPenyusutan float64 `json:"bebanPenyusutan"`
 	Koreksi         float64 `json:"koreksi,omitempty"`
 	Ket             string  `json:"ket"`
+	HargaTotal      float64 `json:"hargaTotal"`
 }
 
 // BarangKeluar model
@@ -60,12 +61,14 @@ type Rkbmd struct {
 
 // DetailRkbmd model
 type DetailRkbmd struct {
-	ID         int    `json:"id,omitempty"`
-	RkbmdID    int    `json:"rkbmdID,omitempty"`
-	Jml        int    `json:"jml,omitempty"`
-	KodeBarang string `json:"kodeBarang,omitempty"`
-	NamaBarang string `json:"namaBarang,omitempty"`
-	Status     string `json:"status,omitempty"`
+	ID         int     `json:"id,omitempty"`
+	RkbmdID    int     `json:"rkbmdID,omitempty"`
+	Jml        int     `json:"jml,omitempty"`
+	KodeBarang string  `json:"kodeBarang,omitempty"`
+	NamaBarang string  `json:"namaBarang,omitempty"`
+	Status     string  `json:"status,omitempty"`
+	Harga      float64 `json:"harga"`
+	HargaTotal float64 `json:"hargaTotal"`
 }
 
 // RkbmdDetail model
