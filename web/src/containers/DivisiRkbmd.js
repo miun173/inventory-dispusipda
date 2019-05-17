@@ -162,7 +162,6 @@ export class DivisiRkbmd extends React.Component {
     });
   };
 
-
   render() {
     const tableBarang = [{
       title: 'Nama',
@@ -247,7 +246,7 @@ export class DivisiRkbmd extends React.Component {
         <Table columns={tableRkbmd} dataSource={rkbmds} />
       </div>
 
-      <Modal title="Basic Modal"
+      <Modal title="Edit Barang"
         visible={this.state.modVisible}
         onOk={this.handleOk}
         onCancel={this.handleCancel} >

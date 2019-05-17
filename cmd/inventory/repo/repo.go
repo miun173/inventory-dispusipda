@@ -192,6 +192,23 @@ func CreateBarang(brg *models.Barang) error {
 	return nil
 }
 
+// UpdateBarang repo
+func UpdateBarang(brg models.Barang) error {
+	stm, err := db.Prepare(`UPDATE barang 
+	SET 
+		kode = ?, nama = ?, reg = ?, merk = ?, jml = ?, ket = ?, ukuran = ?, bahan = ?, tglMasuk = ?, tipeSpek = ?, nomorSpek = ?, caraPerolehan = ?, harga = ?, nilaiSisa = ?, umurEkonomis = ?, umurPenggunaan = ?, nilaiBuku = ?, bebanPenyusutan = ?
+	WHERE
+		id = ?
+	`)
+
+	_, err = stm.Exec(brg.Kode, brg.Nama, brg.Reg, brg.Merk, brg.Jml, brg.Ket, brg.Ukuran, brg.Bahan, brg.TglMasuk, brg.TipeSpek, brg.NomorSpek, brg.CaraPerolehan, brg.Harga, brg.NilaiSisa, brg.UmurEkonomis, brg.UmurPenggunaan, brg.NilaiBuku, brg.BebanPenyusutan, brg.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // CreateBarangKeluar insert new barang keluar to DB
 func CreateBarangKeluar(brg *models.BarangKeluar) error {
 	stm, err := db.Prepare(`INSERT INTO barangKeluar (barangID, jml, tglKeluar) 

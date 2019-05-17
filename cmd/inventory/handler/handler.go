@@ -164,6 +164,20 @@ func GetBarang(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(brg)
 }
 
+func UpdateBarang(w http.ResponseWriter, r *http.Request) {
+	var brg models.Barang
+	err := json.NewDecoder(r.Body).Decode(&brg)
+	if err != nil {
+		log.Printf("%+v", err)
+		json.NewEncoder(w).Encode(map[string]string{"error": "system error"})
+		return
+	}
+
+	err = repo.UpdateBarang(brg)
+
+	json.NewEncoder(w).Encode(brg)
+}
+
 // CreateBarangKeluar handle barang keluar
 func CreateBarangKeluar(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
