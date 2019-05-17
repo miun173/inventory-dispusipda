@@ -161,6 +161,16 @@ export class BarangMasuk extends React.Component {
     })
   }
 
+  handleEditSpek = (value) => {
+    if (!this._isMounted) return;
+    this.setState({
+      editedBarang: {
+        ...this.state.editedBarang,
+        tipeSpek: value,
+      }
+    });
+  }
+
   handleOk = async (e) => {
     e.preventDefault();
     const { editedBarang } = this.state;
@@ -371,7 +381,7 @@ export class BarangMasuk extends React.Component {
               }}>
               <Select style={{ width: '100px' }} 
                 value={editedBarang.tipeSpek}
-                name='tipeSpek' onChange={this.handleSelectSpek}>
+                name='tipeSpek' onChange={this.handleEditSpek}>
 
                   { this.tipe.map((t, idx) => <Option key={idx} value={t} >{t}</Option>) }
               </Select>
