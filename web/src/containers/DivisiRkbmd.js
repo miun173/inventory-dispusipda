@@ -5,6 +5,7 @@ import {
   Table,
   Button,
   notification,
+  Modal,
 } from 'antd';
 
 import { InputCard } from '../components'
@@ -29,7 +30,16 @@ const initState = {
     harga: 0.0,
   },
   newRkbmd: [],
-  rkbmds: []
+  rkbmds: [],
+  editedBarang: {
+    idx: 0,
+    namaBarang: '',
+    kodeBarang: '',
+    satuan: '',
+    jml: 0,
+    harga: 0.0,
+  },
+  modVisible: false,
 }
 export class DivisiRkbmd extends React.Component {
   _isMounted = false
@@ -57,6 +67,21 @@ export class DivisiRkbmd extends React.Component {
       }
     });
   }
+
+  handleEditBarangInput = (event) => {
+    const target = event.target;
+    const value = target.type === 'number' ? parseFloat(target.value) : target.value;
+    const name = target.name;
+
+    if (!this._isMounted) return;
+    this.setState({
+      editedBarang: {
+        ...this.state.editedBarang,
+        [name]: value,
+      }
+    });
+  }
+
 
   handleTambah = (e) => {
     e.preventDefault();
@@ -108,6 +133,36 @@ export class DivisiRkbmd extends React.Component {
       rkbmds: data
     })
   }
+
+  editBarang = (idx) => {
+    this.setState({
+      modVisible: true,
+      editedBarang: {
+        idx,
+        ...this.state.newRkbmd[idx]
+      }
+    })
+  }
+
+  handleOk = e => {
+    const { newRkbmd, editedBarang } = this.state;
+
+    newRkbmd[editedBarang.idx] = editedBarang
+
+    this.setState({
+      modVisible: false,
+      newRkbmd,
+    });
+  };
+
+  handleCancel = e => {
+    console.log(e);
+    this.setState({
+      modVisible: false,
+    });
+  };
+
+
   render() {
     const tableBarang = [{
       title: 'Nama',
@@ -137,7 +192,13 @@ export class DivisiRkbmd extends React.Component {
       title: 'Satuan',
       dataIndex: 'satuan',
       key: 'satuan',
-    },]
+    }, {
+      title: 'Action',
+      key: 'action',
+      render: (_, rec, idx) => {
+        return <Button onClick={() => this.editBarang(idx)}>Edit</Button>
+      }
+    }]
     
     const tableRkbmd = [{
       title: 'ID',
@@ -154,7 +215,8 @@ export class DivisiRkbmd extends React.Component {
       key: 'status'
     }]
 
-    const { newBarang, newRkbmd, rkbmds } = this.state
+    const { newBarang, newRkbmd, rkbmds, editedBarang } = this.state
+
     return <Container>
       <div>
         <h2>Tambah Barang</h2>
@@ -184,6 +246,27 @@ export class DivisiRkbmd extends React.Component {
         <h2>Daftar RKBMD</h2>
         <Table columns={tableRkbmd} dataSource={rkbmds} />
       </div>
+
+      <Modal title="Basic Modal"
+        visible={this.state.modVisible}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel} >
+        
+        <form>
+          <SidedCard>
+            <InputCard value={editedBarang.namaBarang} label='Nama Barang' name='namaBarang' onChange={this.handleEditBarangInput}/>
+            <InputCard width={100} value={editedBarang.jml} type='number' label='Jml' name='jml' onChange={this.handleEditBarangInput}/>
+          </SidedCard>
+          <SidedCard>
+            <InputCard value={editedBarang.satuan} label='Satuan' name='satuan' onChange={this.handleEditBarangInput}/>
+            <InputCard width={100} value={editedBarang.kodeBarang} label='Kode Barang' name='kodeBarang' onChange={this.handleEditBarangInput}/>
+          </SidedCard>
+          <SidedCard>
+            <InputCard type='number' value={editedBarang.harga} label='Harga' name='harga' onChange={this.handleEditBarangInput}/>
+          </SidedCard>
+        </form>
+
+        </Modal>
     </Container>
   }
 }
