@@ -196,9 +196,19 @@ export class AccRkbmd extends React.Component {
       dataIndex: 'namaBarang',
       key: 'namaBarang'
     }, {
+      title: 'Harga',
+      dataIndex: 'harga',
+      key: 'harga',
+      render: t => t.toLocaleString('id-ID')
+    }, {
       title: 'Jumlah',
       dataIndex: 'jml',
       key: 'jml',
+    }, {
+      title: 'Total Harga',
+      dataIndex: 'harga',
+      key: 'harga',
+      render: (_, rec) => (rec.harga * rec.jml).toLocaleString('id-ID')
     }, {
       title: 'Status',
       dataIndex: 'status',

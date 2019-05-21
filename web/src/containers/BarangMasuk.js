@@ -28,10 +28,25 @@ const SidedCard = styled.div`
   display: flex;
 `
 
-const tipe = ['Polisi', 'Mesin']
+const tipe = ['Pabrik', 'Polisi', 'Rangka', 'Mesin', 'BPKB']
+const kodeBarang = [
+  { kode: '1A1', name: 'Perlengkapan' },
+  { kode: '1A2', name: 'Alat tulis kantor' },
+  { kode: '1B1', name: 'Kursi' },
+  { kode: '1B2', name: 'Meja' },
+  { kode: '1B3', name: 'Lemari' },
+  { kode: '1B4', name: 'Kendaraan' },
+  { kode: '1B5', name: 'Tanah' },
+  { kode: '1B6', name: 'Bangunan' },
+  { kode: '1B7', name: 'Gedung' },
+  { kode: '1B8', name: 'Mesin' },
+  { kode: '1C1', name: 'Goodwill' },
+  { kode: '1C2', name: 'Paten' },
+];
+
 const initNewBarang = {
-  kode: '', 
-  nama: '', 
+  kode: kodeBarang[0].kode, 
+  nama: kodeBarang[0].name, 
   reg: '',
   merk: '',
   ukuran: '',
@@ -53,7 +68,8 @@ const initNewBarang = {
 
 export class BarangMasuk extends React.Component {
   _isMounted = false
-  tipe = ['Polisi', 'Mesin']
+  tipe = tipe
+  kodeBarang = kodeBarang
   state = {
     barangs: [],
     modVisible: false,
@@ -171,6 +187,28 @@ export class BarangMasuk extends React.Component {
     });
   }
 
+  handleEditNamaBarang = (idx) => {
+    if (!this._isMounted) return;
+    this.setState({
+      editedBarang: {
+        ...this.state.editedBarang,
+        nama: this.kodeBarang[idx].name,
+        kode: this.kodeBarang[idx].kode,
+      }
+    });
+  }
+
+  handleNamaBarang = (value) => {
+    if (!this._isMounted) return;
+    this.setState({
+      newBarang: {
+        ...this.state.newBarang,
+        nama: this.kodeBarang[value].name,
+        kode: this.kodeBarang[value].kode
+      }
+    });
+  }
+
   handleOk = async (e) => {
     e.preventDefault();
     const { editedBarang } = this.state;
@@ -243,12 +281,17 @@ export class BarangMasuk extends React.Component {
         <form>
           <SidedCard>
             <Card>
-              <label>Nama</label>
-              <Input value={newBarang.nama} name='nama' onChange={this.handleBarangInput}/>
+              <label>Nama</label> <br />
+              <Select style={{ width: '100%' }} 
+                value={newBarang.nama}
+                name='tipeSpek' onChange={this.handleNamaBarang}>
+
+                  { this.kodeBarang.map((k, idx) => <Option key={idx} value={idx} >{k.name}</Option>) }
+              </Select>
             </Card>
             <Card>
-              <label>Kode</label>
-              <Input value={newBarang.kode} name='kode' onChange={this.handleBarangInput}/>
+              <label>Kode</label> <br />
+              <p style={{ paddingTop: '4px' }}><b>{newBarang.kode}</b></p>
             </Card>
           </SidedCard>
           <SidedCard>
@@ -338,15 +381,21 @@ export class BarangMasuk extends React.Component {
         visible={this.state.modVisible}
         onOk={this.handleOk}
         onCancel={this.handleCancel} >
-      <form>
+
+        <form>
           <SidedCard>
             <Card>
-              <label>Nama</label>
-              <Input value={editedBarang.nama} name='nama' onChange={this.handleEditBarangInput}/>
+              <label>Nama</label> 
+              <Select style={{ width: '100%' }} 
+                value={editedBarang.nama}
+                name='tipeSpek' onChange={this.handleEditNamaBarang}>
+
+                  { this.kodeBarang.map((k, idx) => <Option key={idx} value={idx} >{k.name}</Option>) }
+              </Select>
             </Card>
             <Card>
               <label>Kode</label>
-              <Input value={editedBarang.kode} name='kode' onChange={this.handleEditBarangInput}/>
+              <p style={{ paddingTop: '4px' }}><b>{editedBarang.kode}</b></p>
             </Card>
           </SidedCard>
           <SidedCard>

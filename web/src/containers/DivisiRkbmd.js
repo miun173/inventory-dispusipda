@@ -6,9 +6,12 @@ import {
   Button,
   notification,
   Modal,
+  Select,
 } from 'antd';
 
 import { InputCard } from '../components'
+
+const { Option } = Select
 
 const SidedCard = styled.div`
   display: flex;
@@ -21,10 +24,24 @@ const Container = styled.div`
   box-sizing: border-box;
 `
 
+const kodeBarang = [
+  { kode: '1A1', name: 'Perlengkapan' },
+  { kode: '1A2', name: 'Alat tulis kantor' },
+  { kode: '1B1', name: 'Kursi' },
+  { kode: '1B2', name: 'Meja' },
+  { kode: '1B3', name: 'Lemari' },
+  { kode: '1B4', name: 'Kendaraan' },
+  { kode: '1B5', name: 'Tanah' },
+  { kode: '1B6', name: 'Bangunan' },
+  { kode: '1B7', name: 'Gedung' },
+  { kode: '1B8', name: 'Mesin' },
+  { kode: '1C1', name: 'Goodwill' },
+  { kode: '1C2', name: 'Paten' },
+];
 const initState = {
   newBarang: {
-    namaBarang: '',
-    kodeBarang: '',
+    namaBarang: kodeBarang[0].name,
+    kodeBarang: kodeBarang[0].kode,
     satuan: '',
     jml: 0,
     harga: 0.0,
@@ -44,6 +61,7 @@ const initState = {
 export class DivisiRkbmd extends React.Component {
   _isMounted = false
   state = {...initState}
+  kodeBarang = kodeBarang
   
   componentWillUnmount() {
     this._isMounted = false
@@ -81,7 +99,6 @@ export class DivisiRkbmd extends React.Component {
       }
     });
   }
-
 
   handleTambah = (e) => {
     e.preventDefault();
@@ -142,6 +159,28 @@ export class DivisiRkbmd extends React.Component {
         ...this.state.newRkbmd[idx]
       }
     })
+  }
+
+  handleEditNamaBarang = (idx) => {
+    if (!this._isMounted) return;
+    this.setState({
+      editedBarang: {
+        ...this.state.editedBarang,
+        namaBarang: this.kodeBarang[idx].name,
+        kodeBarang: this.kodeBarang[idx].kode,
+      }
+    });
+  }
+
+  handleNamaBarang = (idx) => {
+    if (!this._isMounted) return;
+    this.setState({
+      newBarang: {
+        ...this.state.newBarang,
+        namaBarang: this.kodeBarang[idx].name,
+        kodeBarang: this.kodeBarang[idx].kode,
+      }
+    });
   }
 
   handleOk = e => {
@@ -221,12 +260,23 @@ export class DivisiRkbmd extends React.Component {
         <h2>Tambah Barang</h2>
         <form>
           <SidedCard>
-            <InputCard value={newBarang.namaBarang} label='Nama Barang' name='namaBarang' onChange={this.handleBarangInput}/>
-            <InputCard width={100} value={newBarang.jml} type='number' label='Jml' name='jml' onChange={this.handleBarangInput}/>
+            <div>
+              <label>Nama</label> <br />
+              <Select style={{ width: '300px', marginRight: '8px' }} 
+                value={newBarang.namaBarang}
+                onChange={this.handleNamaBarang}>
+
+                  { this.kodeBarang.map((k, idx) => <Option key={idx} value={idx} >{k.name}</Option>) }
+              </Select>
+            </div>
+            <div>
+              <label>Kode</label>
+              <p style={{ paddingTop: '4px' }}><b>{newBarang.kodeBarang}</b></p>
+            </div>
           </SidedCard>
           <SidedCard>
             <InputCard value={newBarang.satuan} label='Satuan' name='satuan' onChange={this.handleBarangInput}/>
-            <InputCard width={100} value={newBarang.kodeBarang} label='Kode Barang' name='kodeBarang' onChange={this.handleBarangInput}/>
+            <InputCard width={100} value={newBarang.jml} type='number' label='Jml' name='jml' onChange={this.handleBarangInput}/>
           </SidedCard>
           <SidedCard>
             <InputCard type='number' value={newBarang.harga} label='Harga' name='harga' onChange={this.handleBarangInput}/>
@@ -253,12 +303,23 @@ export class DivisiRkbmd extends React.Component {
         
         <form>
           <SidedCard>
-            <InputCard value={editedBarang.namaBarang} label='Nama Barang' name='namaBarang' onChange={this.handleEditBarangInput}/>
-            <InputCard width={100} value={editedBarang.jml} type='number' label='Jml' name='jml' onChange={this.handleEditBarangInput}/>
+            <div>
+              <label>Nama</label> <br />
+              <Select style={{ width: '300px' }} 
+                value={editedBarang.namaBarang}
+                name='tipeSpek' onChange={this.handleEditNamaBarang}>
+
+                  { this.kodeBarang.map((k, idx) => <Option key={idx} value={idx} >{k.name}</Option>) }
+              </Select>
+            </div>
+            <div>
+              <label>Kode</label>
+              <p style={{ paddingTop: '4px' }}><b>{editedBarang.kodeBarang}</b></p>
+            </div>
           </SidedCard>
           <SidedCard>
             <InputCard value={editedBarang.satuan} label='Satuan' name='satuan' onChange={this.handleEditBarangInput}/>
-            <InputCard width={100} value={editedBarang.kodeBarang} label='Kode Barang' name='kodeBarang' onChange={this.handleEditBarangInput}/>
+            <InputCard width={100} value={editedBarang.jml} type='number' label='Jml' name='jml' onChange={this.handleEditBarangInput}/>
           </SidedCard>
           <SidedCard>
             <InputCard type='number' value={editedBarang.harga} label='Harga' name='harga' onChange={this.handleEditBarangInput}/>
