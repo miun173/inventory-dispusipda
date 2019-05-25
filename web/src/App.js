@@ -171,6 +171,7 @@ class App extends Component {
                   return this.logout();
                 }} />
                 <Route path='/' component={() => <Home userInfo={userInfo} />}/>
+                <Redirect to="/" />
               </Switch>
         </Container>
       </Router>
