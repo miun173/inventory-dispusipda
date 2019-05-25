@@ -214,13 +214,14 @@ export class DivisiRkbmd extends React.Component {
       title: 'Harga',
       dataIndex: 'harga',
       key: 'harga',
+      render: t => 'Rp' + t.toLocaleString('id-ID')
     }, {
       title: 'Total Harga',
       dataIndex: 'hargaTotal',
       key: 'hargaTotal',
       render: (d, rec) => {
         const sum = rec.harga * rec.jml
-        return sum ? sum.toLocaleString('id-ID') : 0
+        return sum ? 'Rp' + sum.toLocaleString('id-ID') : 'Rp' + 0
       }
     }, {
       title: 'Kode',

@@ -88,12 +88,12 @@ export class BukuInventaris extends React.Component {
       title: 'Harga',
       dataIndex: 'harga',
       key: 'harga',
-      render: (d) => d ? d.toLocaleString('id-ID') : 0
+      render: (d) => d ? 'Rp' + d.toLocaleString('id-ID') : 'Rp' + 0
     }, {
       title: 'Total Harga',
       dataIndex: 'hargaTotal',
       key: 'hargaTotal',
-      render: (d) => d ? d.toLocaleString('id-ID') : 0
+      render: (d) => d ? 'Rp' + d.toLocaleString('id-ID') : 'Rp' + 0
     }, {
       title: 'Ukuran',
       dataIndex: 'ukuran',
@@ -143,12 +143,12 @@ export class BukuInventaris extends React.Component {
       title: 'Beban Penyusutan',
       dataIndex: 'bebanPenyusutan',
       key: 'bebanPenyusutan',
-      render: (d) => d ? d.toLocaleString('id-ID') : 0
+      render: (d) => d ? 'Rp' + d.toLocaleString('id-ID') : 'Rp' + 0
     }, {
       title: `Penyusutan ${(new Date()).getFullYear()}`,
       dataIndex: 'penyusutan',
       key: 'penyusutan',
-      render: (d) => d ? d.toLocaleString('id-ID') : 0
+      render: (d) => d ? 'Rp' + d.toLocaleString('id-ID') : 'Rp' + 0
     },]
 
     return <div style={{ width: '900px', padding: '16px' }}>
