@@ -77,7 +77,7 @@ type RkbmdDetail struct {
 	Detail []DetailRkbmd `json:"details"`
 }
 
-// Jurnal model
+// Jurnal / Buku Inventaris model
 type Jurnal struct {
 	Barang
 	Penyusutan float64 `json:"penyusutan"`

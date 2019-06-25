@@ -9,15 +9,50 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/miun173/inventory-dispusibda/cmd/inventory/app"
 	"github.com/miun173/inventory-dispusibda/cmd/inventory/handler"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/repo"
+	"github.com/miun173/inventory-dispusibda/cmd/inventory/infra"
+	"github.com/miun173/inventory-dispusibda/cmd/inventory/repository"
 )
 
-func init() {
-	repo.InitDB()
-}
-
 func main() {
+	db := infra.NewDB()
+	err := db.Ping()
+	if err != nil {
+		log.Println(">>> db error")
+		panic(err)
+	}
+	defer db.Close()
+	log.Println(">>> init database")
+
+	err = infra.CreateTable(db)
+	if err != nil {
+		log.Fatalf(err.Error())
+		panic(err)
+	}
+	log.Println(">>> creating table")
+
+	// init repositories
+	userRepo := repository.NewUserRepo(db)
+	err = userRepo.InitUser()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	barangRepo := repository.NewBarangRepo(db)
+	barangKeluarRepo := repository.NewBarangKeluarRepo(db)
+	rkbmdRepo := repository.NewRkbmdRepo(db)
+
+	// init services
+	userService := app.NewUserService(userRepo)
+	jurnalService := app.NewJurnalService(barangRepo)
+
+	// init handlers
+	authHandler := handler.NewAuthHandler(userService)
+	jurnalHandler := handler.NewJurnalHandler(jurnalService)
+	brgHandler := handler.NewBarangHandler(barangRepo)
+	brgKeluarHandler := handler.NewBarangKeluarHandler(barangRepo, barangKeluarRepo)
+	rkbmdHandler := handler.NewRkbmdHandler(rkbmdRepo)
+
 	staticDir := os.Getenv("STATIC_DIR")
 	if staticDir == "" {
 		staticDir = "./static"
@@ -36,28 +71,28 @@ func main() {
 	router.HandleFunc("/api/ping", handler.Ping).Methods("GET")
 
 	// auth
-	router.HandleFunc("/api/auth/check", handler.CheckAuth).Methods("POST")
+	router.HandleFunc("/api/auth/check", authHandler.Authorize).Methods("POST")
 
 	// users
-	router.HandleFunc("/api/login", handler.Login).Methods("POST")
+	router.HandleFunc("/api/login", authHandler.Login).Methods("POST")
 	router.HandleFunc("/api/users", handler.GetAllUsers).Methods("GET")
 	router.HandleFunc("/api/users", handler.CreateUser).Methods("POST")
 
 	// barang
-	router.HandleFunc("/api/barang/{id}", handler.GetBarang).Methods("GET")
-	router.HandleFunc("/api/barang", handler.UpdateBarang).Methods("PUT")
-	router.HandleFunc("/api/barang", handler.GetAllBarang).Methods("GET")
-	router.HandleFunc("/api/barang", handler.CreateBarang).Methods("POST")
-	router.HandleFunc("/api/barang-keluar", handler.CreateBarangKeluar).Methods("POST")
-	router.HandleFunc("/api/barang-keluar", handler.GetAllBarangKeluar).Methods("GET")
+	router.HandleFunc("/api/barang/{id}", brgHandler.Get).Methods("GET")
+	router.HandleFunc("/api/barang", brgHandler.Update).Methods("PUT")
+	router.HandleFunc("/api/barang", brgHandler.GetAll).Methods("GET")
+	router.HandleFunc("/api/barang", brgHandler.Save).Methods("POST")
+	router.HandleFunc("/api/barang-keluar", brgKeluarHandler.Save).Methods("POST")
+	router.HandleFunc("/api/barang-keluar", brgKeluarHandler.GetAll).Methods("GET")
 
 	// jurnal
-	router.HandleFunc("/api/jurnal", handler.GetJurnal).Methods("GET")
+	router.HandleFunc("/api/jurnal", jurnalHandler.GetJurnal).Methods("GET")
 
 	// rkbmd
-	router.HandleFunc("/api/rkbmd", handler.CreateRkbmd).Methods("POST")
-	router.HandleFunc("/api/rkbmd", handler.GetAllRkbmd).Methods("GET")
-	router.HandleFunc("/api/rkbmd", handler.UpdateRkbmd).Methods("PUT")
+	router.HandleFunc("/api/rkbmd", rkbmdHandler.Save).Methods("POST")
+	router.HandleFunc("/api/rkbmd", rkbmdHandler.GetAll).Methods("GET")
+	router.HandleFunc("/api/rkbmd", rkbmdHandler.Update).Methods("PUT")
 
 	// frontend
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(staticDir + "/")))
