@@ -4,15 +4,15 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/miun173/inventory-dispusibda/inventory/app"
+	"github.com/miun173/inventory-dispusibda/inventory/handler"
+	"github.com/miun173/inventory-dispusibda/inventory/infra"
+	"github.com/miun173/inventory-dispusibda/inventory/repository"
 	"github.com/urfave/negroni"
 
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/app"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/handler"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/infra"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/repository"
 )
 
 func main() {

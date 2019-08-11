@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/app"
+	"github.com/miun173/inventory-dispusibda/inventory/app"
 )
 
 // JurnalHandler handler for jurnal routes

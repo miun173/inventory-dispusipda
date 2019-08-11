@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/repo"
+	"github.com/miun173/inventory-dispusibda/inventory/models"
+	"github.com/miun173/inventory-dispusibda/inventory/repo"
 )
 
 // CreateUser handle user creation

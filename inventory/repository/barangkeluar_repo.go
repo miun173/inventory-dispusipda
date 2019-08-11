@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
+	"github.com/miun173/inventory-dispusibda/inventory/models"
 	"github.com/pkg/errors"
 )
 

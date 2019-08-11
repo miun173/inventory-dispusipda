@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/repository"
+	"github.com/miun173/inventory-dispusibda/inventory/models"
+	"github.com/miun173/inventory-dispusibda/inventory/repository"
 )
 
 type BarangHandler interface {

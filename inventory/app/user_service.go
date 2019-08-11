@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/repository"
+	"github.com/miun173/inventory-dispusibda/inventory/models"
+	"github.com/miun173/inventory-dispusibda/inventory/repository"
 )
 
 // UserService user domain service

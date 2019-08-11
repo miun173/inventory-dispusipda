@@ -7,11 +7,11 @@ import (
 	"log"
 	"time"
 
+	"github.com/miun173/inventory-dispusibda/inventory/models"
 	"github.com/pkg/errors"
 
 	// sqlite driver
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
 )
 
 var db *sql.DB

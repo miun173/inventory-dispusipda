@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/app"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
+	"github.com/miun173/inventory-dispusibda/inventory/app"
+	"github.com/miun173/inventory-dispusibda/inventory/models"
 	"github.com/pkg/errors"
 )
 

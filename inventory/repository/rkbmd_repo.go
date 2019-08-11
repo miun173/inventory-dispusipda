@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models"
-	"github.com/miun173/inventory-dispusibda/cmd/inventory/models/rkbmd"
+	"github.com/miun173/inventory-dispusibda/inventory/models"
+	"github.com/miun173/inventory-dispusibda/inventory/models/rkbmd"
 	"github.com/pkg/errors"
 )
 
